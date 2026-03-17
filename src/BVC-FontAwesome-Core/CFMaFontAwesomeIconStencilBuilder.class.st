@@ -8,6 +8,6 @@ Class {
 { #category : 'api - instantiation' }
 CFMaFontAwesomeIconStencilBuilder >> buildDefault [
 	^ self model
-		ifNil: [ CFMaBuilderUtility newChooseIconAffordanceFor: self description ]
-		ifNotNil: [ CFMaBuilderUtility newFontAwesomeIconFor: self model using: self description ]
+		ifNil: [ CFMaFontAwesomeBuilderUtility newChooseIconAffordanceFor: self description ]
+		ifNotNil: [ CFMaFontAwesomeBuilderUtility newFontAwesomeIconFor: self model using: self description ]
 ]

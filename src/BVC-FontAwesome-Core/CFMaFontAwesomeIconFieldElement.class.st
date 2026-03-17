@@ -19,8 +19,8 @@ CFMaFontAwesomeIconFieldElement >> currentValue [
 CFMaFontAwesomeIconFieldElement >> iconElementForValue: aValue [
 	self fieldViewModel ifNil: [ ^ self newPlaceholderElement ].
 	^ aValue
-		ifNil: [ CFMaBuilderUtility newChooseIconAffordanceFor: self description ]
-		ifNotNil: [ CFMaBuilderUtility newFontAwesomeIconFor: aValue using: self description ]
+		ifNil: [ CFMaFontAwesomeBuilderUtility newChooseIconAffordanceFor: self description ]
+		ifNotNil: [ CFMaFontAwesomeBuilderUtility newFontAwesomeIconFor: aValue using: self description ]
 ]
 
 { #category : 'initialization' }

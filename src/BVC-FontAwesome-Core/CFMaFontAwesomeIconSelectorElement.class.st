@@ -199,7 +199,7 @@ CFMaFontAwesomeIconSelectorElement >> newIconTileFor: anMetadata [
 	| iconElement previewHeight tile tileExtent |
 	previewHeight := self previewHeight.
 	tileExtent := self tileExtentForPreviewHeight: previewHeight.
-	iconElement := CFMaBuilderUtility
+	iconElement := CFMaFontAwesomeBuilderUtility
 		newFontAwesomeIconForMetadata: anMetadata
 		styleName: self activeStyleName
 		fitInto: previewHeight @ previewHeight.

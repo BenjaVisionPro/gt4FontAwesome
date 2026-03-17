@@ -5,6 +5,11 @@ Class {
 	#package : 'BVC-FontAwesome-Core'
 }
 
+{ #category : 'visiting' }
+CFMaFontAwesomeIconDescription >> acceptMagritte: aVisitor [
+	^ aVisitor visitFontAwesomeIconDescription: self
+]
+
 { #category : 'icons' }
 CFMaFontAwesomeIconDescription >> applySizingToIconElement: anElement [
 	| width height |
