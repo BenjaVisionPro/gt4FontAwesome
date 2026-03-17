@@ -8,6 +8,7 @@ Class {
 	#classVars : [
 		'DefaultStyleAnnouncer',
 		'DefaultStyleName',
+		'GtIconsFilterQuery',
 		'Metadata'
 	],
 	#category : 'BVC-FontAwesome-Core',
@@ -20,6 +21,14 @@ CFFontAwesomeIcons class >> announceDefaultStyleChanged [
 		announce: (CFFontAwesomeDefaultStyleChangedAnnouncement
 				iconLibraryClass: self
 				styleName: self defaultStyleName)
+]
+
+{ #category : 'announcing' }
+CFFontAwesomeIcons class >> announceGtIconsFilterChanged [
+	self announcer
+		announce: (CFFontAwesomeIconsFilterChangedAnnouncement
+				iconLibraryClass: self
+				queryText: self gtIconsFilterQuery)
 ]
 
 { #category : 'announcing' }
@@ -89,28 +98,50 @@ CFFontAwesomeIcons class >> gtDefaultStyleActionFor: anAction [
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtIconsFor: aView [
-	<gtView>
-	<gtClassView>
-	^ aView explicit
-		title: 'Icons';
-		priority: -10;
-		stencil: [ CFFontAwesomeIconsViewElement new
-				iconLibraryClass: self;
-				yourself ]
+CFFontAwesomeIcons class >> gtFilterActionFor: anAction [
+	<gtAction>
+	^ anAction dropdown
+		priority: 15;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: self gtFilterTooltip;
+		content: [ :aButton :aTargetElement :anExplicitMenu |
+			self gtFilterMenuContentFor: aButton menuModel: anExplicitMenu ]
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
-	<gtSearch>
-	^ aSearch list
-		title: 'Vector Icons';
-		priority: 1;
-		items: [ GtSpotterVectorIconPreview
-				library: self
-				allIcons: self availableIcons ];
-		itemName: #iconSelector;
-		filterBySubstring
+CFFontAwesomeIcons class >> gtIconsFor: aView [
+	<gtView>
+	<gtClassView>
+	^ aView list
+		title: 'Icons';
+		priority: -10;
+		items: [ self gtIconAssociationsMatching: self gtIconsFilterQuery ];
+		updateWhen: CFFontAwesomeDefaultStyleChangedAnnouncement in: [ self announcer ];
+		updateWhen: CFFontAwesomeIconsFilterChangedAnnouncement in: [ self announcer ];
+		itemStencil: [ BlElement new
+				layout: BlLinearLayout horizontal;
+				margin: (BlInsets all: 3);
+				constraintsDo: [ :c |
+					c vertical fitContent.
+					c horizontal matchParent ];
+				addChild: (BlElement new size: 64 @ 64) as: #icon;
+				addChild: (BrLabel new
+							aptitude: BrGlamorousLabelAptitude;
+							constraintsDo: [ :c | c linear vertical alignCenter ];
+							padding: (BlInsets left: 20 right: 3))
+					as: #label ];
+		itemDataBinder: [ :anElement :anIcon :anIndex |
+			| icon iconElement |
+			icon := self icon: anIcon key.
+			iconElement := icon asScalableElementSized: (icon extentFittingInto: 64 @ 64).
+			anElement
+				replaceChild: (anElement childNamed: #icon)
+				with: iconElement
+				as: #icon.
+			(anElement childNamed: #label) text: anIcon key asString.
+			anElement ];
+		actionUpdateButtonTooltip: 'Update icon list';
+		send: #value
 ]
 
 { #category : 'gt extensions' }
@@ -127,6 +158,66 @@ CFFontAwesomeIcons class >> gtIconAssociationsMatching: aString [
 				at: each selectorSymbol
 				ifAbsent: [ nil ] ])
 		reject: [ :each | each isNil ]
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsClearFilter [
+	self gtIconsFilterQuery: ''
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsFilterQuery [
+	^ GtIconsFilterQuery ifNil: [ '' ]
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsFilterQuery: aString [
+	| normalized |
+	normalized := (aString ifNil: [ '' ]) trimBoth.
+	GtIconsFilterQuery = normalized ifTrue: [ ^ self ].
+	GtIconsFilterQuery := normalized.
+	self announceGtIconsFilterChanged
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtFilterMenuContentFor: aButton menuModel: anExplicitMenu [
+	| container searchEditor clearButton |
+	container := BrHorizontalPane new
+		cellSpacing: 6;
+		padding: (BlInsets all: 6);
+		background: aButton theme default contentBackground;
+		yourself.
+	searchEditor := BrEditor new
+		constraintsDo: [ :c |
+			c horizontal exact: 220.
+			c vertical fitContent ];
+		yourself.
+	searchEditor aptitude: BrEditorAptitude new.
+	searchEditor text: self gtIconsFilterQuery.
+	searchEditor when: BlKeyUpEvent do: [ :anEvent |
+		self gtIconsFilterQuery: searchEditor text asString trimBoth ].
+	clearButton := BrButton new
+		aptitude: BrGlamorousButtonWithIconAptitude new;
+		label: 'x';
+		action: [ :aButtonElement |
+			self gtIconsClearFilter.
+			searchEditor text: '' ];
+		yourself.
+	container addChildren: { searchEditor. clearButton }.
+	searchEditor inUIProcessDo: [ searchEditor requestFocus ].
+	^ container
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtFilterTooltip [
+	self gtIconsFilterQuery isEmpty ifTrue: [ ^ 'Filter icons' ].
+	^ 'Filter icons: ', self gtIconsFilterQuery
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
+	<gtSearch>
+	^ self metadata gtSearchForFontAwesomeIconsFor: aSearch
 ]
 
 { #category : 'instance creation' }
