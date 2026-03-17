@@ -38,19 +38,26 @@ CFFontAwesomeMetadata >> filterIconsMatching: aString [
 
 { #category : 'gt extensions' }
 CFFontAwesomeMetadata >> gtSearchForFontAwesomeIconsFor: aSearch [
+	^ self
+		gtSearchForFontAwesomeIconsFor: aSearch
+		satisfying: [ :each | true ]
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeMetadata >> gtSearchForFontAwesomeIconsFor: aSearch satisfying: aBlock [
 	<gtSearch>
 	^ aSearch list
 		title: 'Font Awesome Icons';
 		priority: 5;
-		items: [ self allIconMetadata ];
+		items: [ :aContext |
+			self
+				searchIconsMatching: aContext searchQuery
+				satisfying: aBlock ];
 		itemsLimit: Float infinity;
-		itemName: [ :each | each searchableText ];
+		itemName: [ :each | each selectorSymbol asString ];
 		send: [ :each :step :search | each ];
-		filterBySubstringsWith: [ :aSearchFilter :aSpotterContext |
-			aSearchFilter
-				withCharacterSplitter;
-				beCaseInsensitive ];
-		wantsToDisplayOnEmptyQuery: false;
+		filter: [ :aSpotterContext | GtSpotterNoFilter new ];
+		wantsToDisplayOnEmptyQuery: true;
 		yourself
 ]
 

@@ -98,17 +98,6 @@ CFFontAwesomeIcons class >> gtDefaultStyleActionFor: anAction [
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtFilterActionFor: anAction [
-	<gtAction>
-	^ anAction dropdown
-		priority: 15;
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: self gtFilterTooltip;
-		content: [ :aButton :aTargetElement :anExplicitMenu |
-			self gtFilterMenuContentFor: aButton menuModel: anExplicitMenu ]
-]
-
-{ #category : 'gt extensions' }
 CFFontAwesomeIcons class >> gtIconsFor: aView [
 	<gtView>
 	<gtClassView>
@@ -140,7 +129,9 @@ CFFontAwesomeIcons class >> gtIconsFor: aView [
 				as: #icon.
 			(anElement childNamed: #label) text: anIcon key asString.
 			anElement ];
-		actionUpdateButtonTooltip: 'Update icon list';
+		actionStencil: [ :aButton |
+			self gtIconsFilterButtonFor: aButton ]
+			tooltip: self gtFilterTooltip;
 		send: #value
 ]
 
@@ -180,32 +171,24 @@ CFFontAwesomeIcons class >> gtIconsFilterQuery: aString [
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtFilterMenuContentFor: aButton menuModel: anExplicitMenu [
-	| container searchEditor clearButton |
-	container := BrHorizontalPane new
-		cellSpacing: 6;
-		padding: (BlInsets all: 6);
-		background: aButton theme default contentBackground;
-		yourself.
-	searchEditor := BrEditor new
-		constraintsDo: [ :c |
-			c horizontal exact: 220.
-			c vertical fitContent ];
-		yourself.
-	searchEditor aptitude: BrEditorAptitude new.
-	searchEditor text: self gtIconsFilterQuery.
-	searchEditor when: BlKeyUpEvent do: [ :anEvent |
-		self gtIconsFilterQuery: searchEditor text asString trimBoth ].
-	clearButton := BrButton new
-		aptitude: BrGlamorousButtonWithIconAptitude new;
-		label: 'x';
-		action: [ :aButtonElement |
-			self gtIconsClearFilter.
-			searchEditor text: '' ];
-		yourself.
-	container addChildren: { searchEditor. clearButton }.
-	searchEditor inUIProcessDo: [ searchEditor requestFocus ].
-	^ container
+CFFontAwesomeIcons class >> gtIconsFilterButtonFor: aButton [
+	^ (GtSpotterDropdownButtonStencil new
+		icon: BrGlamorousVectorIcons search;
+		tooltip: self gtFilterTooltip;
+		hidePreview;
+		object: self;
+		extent: [ 520 @ 430 ];
+		spotterModelDo: [ :aSpotter |
+			aSpotter currentStep searchQuery: self gtIconsFilterQuery.
+			aSpotter currentStep
+				when: GtSpotterStepSearchQueryChanged
+				do: [ :anAnnouncement |
+					self gtIconsFilterQuery: aSpotter currentStep searchQuery ] ];
+		objectActOn: [ :anActOnEvent :anItem :theButton |
+			self gtIconsFilterQuery: anActOnEvent spotterStep searchQuery.
+			anActOnEvent beActed.
+			theButton fireEvent: BrDropdownHideWish new ];
+		asElement)
 ]
 
 { #category : 'gt extensions' }
@@ -217,7 +200,11 @@ CFFontAwesomeIcons class >> gtFilterTooltip [
 { #category : 'gt extensions' }
 CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 	<gtSearch>
-	^ self metadata gtSearchForFontAwesomeIconsFor: aSearch
+	| activeStyleName |
+	activeStyleName := self styleNameOrDefault: self styleName.
+	^ self metadata
+		gtSearchForFontAwesomeIconsFor: aSearch
+		satisfying: [ :each | each supportsStyleNamed: activeStyleName ]
 ]
 
 { #category : 'instance creation' }
