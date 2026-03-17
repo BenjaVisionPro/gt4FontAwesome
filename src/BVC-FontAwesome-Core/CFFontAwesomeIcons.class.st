@@ -179,7 +179,6 @@ CFFontAwesomeIcons class >> gtIconsFilterButtonFor: aButton [
 	^ (GtSpotterDropdownButtonStencil new
 		icon: BrGlamorousVectorIcons search;
 		tooltip: self gtFilterTooltip;
-		hidePreview;
 		object: self;
 		extent: [ 520 @ 430 ];
 		spotterModelDo: [ :aSpotter |
