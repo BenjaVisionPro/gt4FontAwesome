@@ -71,6 +71,112 @@ CFFontAwesomeIconMetadata >> gtLiveFor: aView [
 				clipChildren: false ]
 ]
 
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValue [
+	| row keyLabel valueLabel |
+	row := BrHorizontalPane new
+		cellSpacing: 8;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		yourself.
+
+	keyLabel := BrLabel new
+		aptitude: BrLabelAptitude new;
+		text: aLabel;
+		opacity: 0.6;
+		constraintsDo: [ :c |
+			c horizontal exact: 92.
+			c vertical fitContent ];
+		yourself.
+
+	valueLabel := BrLabel new
+		aptitude: BrGlamorousLabelAptitude;
+		text: aValue;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		yourself.
+
+	row addChildren: { keyLabel. valueLabel }.
+	^ row
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
+	| root samplesRow details |
+	root := BrVerticalPane new
+		cellSpacing: 12;
+		matchParent;
+		padding: (BlInsets all: 10);
+		yourself.
+
+	samplesRow := BrHorizontalPane new
+		cellSpacing: 12;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ];
+		yourself.
+	#(24 48 96) do: [ :eachHeight |
+		samplesRow addChild: (self gtSpotterPreviewSampleForHeight: eachHeight) ].
+
+	details := BrVerticalPane new
+		cellSpacing: 4;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		yourself.
+	details addChildren: {
+		(self gtSpotterPreviewDetailRowLabel: 'Selector' value: self selectorSymbol asString).
+		(self gtSpotterPreviewDetailRowLabel: 'FA name' value: (self fontAwesomeName ifNil: [ '' ])).
+		(self gtSpotterPreviewDetailRowLabel: 'Style' value: self preferredStyleName).
+		(self gtSpotterPreviewDetailRowLabel: 'Styles' value: (' , ' join: self styles)).
+		(self gtSpotterPreviewDetailRowLabel: 'Categories' value: (' , ' join: self categories)).
+		(self gtSpotterPreviewDetailRowLabel: 'Search' value: (' , ' join: (self searchTerms collect: #asString))) }.
+
+	root addChildren: { samplesRow. details }.
+	^ root
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewSampleForHeight: aHeight [
+	| container iconElement label frameExtent |
+	frameExtent := aHeight + 24.
+	iconElement := CFMaFontAwesomeBuilderUtility
+		newFontAwesomeIconForMetadata: self
+		styleName: self preferredStyleName
+		fitInto: aHeight @ aHeight.
+	iconElement constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+
+	container := BlElement new
+		layout: BlFrameLayout new;
+		constraintsDo: [ :c |
+			c horizontal exact: frameExtent.
+			c vertical exact: frameExtent ];
+		yourself.
+	container addChild: iconElement.
+
+	label := BrLabel new
+		aptitude: BrLabelAptitude new;
+		text: aHeight asString;
+		opacity: 0.6;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent.
+			c linear horizontal alignCenter ];
+		yourself.
+
+	^ BrVerticalPane new
+		cellSpacing: 4;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ];
+		addChildren: { container. label };
+		yourself
+]
+
 { #category : 'accessing' }
 CFFontAwesomeIconMetadata >> iconLibraryClass [
 	^ iconLibraryClass ifNil: [ CFFontAwesomeIcons ]
