@@ -111,13 +111,20 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel content: aCo
 
 { #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
-	| currentStyleName root samplesContainer details |
+	| currentStyleName root styleToggleGroup samplesContainer details |
 	currentStyleName := self preferredStyleName.
 	root := BrVerticalPane new
 		cellSpacing: 4;
 		fitContent;
 		padding: (BlInsets all: 2);
 		yourself.
+
+	styleToggleGroup := self
+		gtSpotterPreviewStyleToggleGroupForSelectedStyle: currentStyleName
+		whenActivated: [ :aStyleName |
+			currentStyleName := aStyleName.
+			samplesContainer removeChildren.
+			samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName) ].
 
 	samplesContainer := BrFrame new
 		fitContent;
@@ -131,20 +138,12 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 			c vertical fitContent ];
 		yourself.
 	details addChildren: {
-		(self
-			gtSpotterPreviewDetailRowLabel: 'Style'
-			content: (self
-				gtSpotterPreviewStyleToggleGroupForSelectedStyle: currentStyleName
-				whenActivated: [ :aStyleName |
-					currentStyleName := aStyleName.
-					samplesContainer removeChildren.
-					samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName) ])).
 		(self gtSpotterPreviewDetailRowLabel: 'Selector' value: self selectorSymbol asString).
 		(self gtSpotterPreviewDetailRowLabel: 'FA name' value: (self fontAwesomeName ifNil: [ '' ])).
 		(self gtSpotterPreviewDetailRowLabel: 'Categories' value: (' , ' join: self categories)).
 		(self gtSpotterPreviewDetailRowLabel: 'Search' value: (' , ' join: (self searchTerms collect: #asString))) }.
 
-	root addChildren: { samplesContainer. details }.
+	root addChildren: { styleToggleGroup. samplesContainer. details }.
 	^ root
 ]
 
