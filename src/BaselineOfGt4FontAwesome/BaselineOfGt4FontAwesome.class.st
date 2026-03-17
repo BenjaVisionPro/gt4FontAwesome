@@ -9,7 +9,7 @@ Class {
 BaselineOfGt4FontAwesome class >> loadLepiter [
 	IceRepository registry  
 		detect: [ :aRepository |
-			aRepository name = 'gt4FontAwesome' ]
+			aRepository name = 'Gt4FontAwesome' ]
 		ifFound: [ :aRepository | 
 			| defaultDatabase currentProperties |
 			defaultDatabase := LeDatabasesRegistry defaultLogicalDatabase.
