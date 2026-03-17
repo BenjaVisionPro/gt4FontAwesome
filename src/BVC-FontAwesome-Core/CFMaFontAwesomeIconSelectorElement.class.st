@@ -27,10 +27,9 @@ CFMaFontAwesomeIconSelectorElement >> activeStyleName [
 
 { #category : 'private' }
 CFMaFontAwesomeIconSelectorElement >> availableMetadata [
-	^ (self metadata allIconMetadata
-		select: [ :each | self shouldShowMetadata: each ])
-		asSortedCollection: [ :a :b |
-			a selectorSymbol asString <= b selectorSymbol asString ]
+	^ self metadata
+		searchIconsMatching: ''
+		satisfying: self metadataFilterBlock
 ]
 
 { #category : 'private' }
@@ -59,11 +58,9 @@ CFMaFontAwesomeIconSelectorElement >> dropdownAnchor: anElement [
 
 { #category : 'private' }
 CFMaFontAwesomeIconSelectorElement >> filteredMetadata [
-	| searchText |
-	searchText := self searchText.
-	searchText isEmpty ifTrue: [ ^ self availableMetadata ].
-	^ (self metadata searchIconsMatching: searchText)
-		select: [ :each | self shouldShowMetadata: each ]
+	^ self metadata
+		searchIconsMatching: self searchText
+		satisfying: self metadataFilterBlock
 ]
 
 { #category : 'private' }
@@ -132,6 +129,11 @@ CFMaFontAwesomeIconSelectorElement >> initialize [
 CFMaFontAwesomeIconSelectorElement >> metadata [
 	self fieldViewModel ifNil: [ ^ CFFontAwesomeMetadata new ].
 	^ self description iconLibraryClass metadata
+]
+
+{ #category : 'private' }
+CFMaFontAwesomeIconSelectorElement >> metadataFilterBlock [
+	^ [ :each | self shouldShowMetadata: each ]
 ]
 
 { #category : 'private' }

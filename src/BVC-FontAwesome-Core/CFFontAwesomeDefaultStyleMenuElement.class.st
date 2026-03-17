@@ -53,20 +53,6 @@ CFFontAwesomeDefaultStyleMenuElement class >> previewSelectorForStyleNamed: aSty
 ]
 
 { #category : 'private' }
-CFFontAwesomeDefaultStyleMenuElement class >> previewSelectorForStyleNamed: aStyleName in: anIconLibraryClass [
-	| aStyleClass someSelectors preferredSelectors |
-	aStyleClass := anIconLibraryClass style: aStyleName.
-	someSelectors := aStyleClass availableIcons collect: #key.
-	preferredSelectors := aStyleName = 'brands'
-		ifTrue: [ #(fontAwesomeFlag fontAwesomeLogoFull) ]
-		ifFalse: [ #(star heart bookmark circle square flag user) ].
-
-	^ preferredSelectors
-		detect: [ :eachSelector | someSelectors includes: eachSelector ]
-		ifNone: [ someSelectors ifEmpty: [ nil ] ifNotEmpty: [ someSelectors first ] ]
-]
-
-{ #category : 'private' }
 CFFontAwesomeDefaultStyleMenuElement class >> shouldShowActionFor: anIconLibraryClass [
 	^ anIconLibraryClass styleName isNil
 		and: [ anIconLibraryClass availableStyles size > 1 ]

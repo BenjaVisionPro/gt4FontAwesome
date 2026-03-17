@@ -79,18 +79,37 @@ CFFontAwesomeMetadata >> queryTermsFor: aString [
 
 { #category : 'searching' }
 CFFontAwesomeMetadata >> searchIconsMatching: aString [
+	^ self
+		searchIconsMatching: aString
+		satisfying: [ :each | true ]
+]
+
+{ #category : 'searching' }
+CFFontAwesomeMetadata >> searchIconsMatching: aString satisfying: aBlock [
 	| terms |
 	terms := self queryTermsFor: aString.
-	terms isEmpty ifTrue: [ ^ self allIconMetadata ].
-	^ (self allIconMetadata
-		select: [ :each | each matchesAllSearchTerms: terms ])
+	^ self
+		sortedMetadata: (self allIconMetadata
+				select: [ :each |
+					(aBlock value: each)
+						and: [ terms isEmpty or: [ each matchesAllSearchTerms: terms ] ] ])
+		matchingSearchTerms: terms
+]
+
+{ #category : 'searching' }
+CFFontAwesomeMetadata >> sortedMetadata: aCollection matchingSearchTerms: terms [
+	^ (aCollection
 		asSortedCollection: [ :a :b |
-			| sa sb |
-			sa := a scoreForSearchTerms: terms.
-			sb := b scoreForSearchTerms: terms.
-			sa = sb
+			terms isEmpty
 				ifTrue: [ a selectorSymbol asString <= b selectorSymbol asString ]
-				ifFalse: [ sa > sb ] ]
+				ifFalse: [
+					| sa sb |
+					sa := a scoreForSearchTerms: terms.
+					sb := b scoreForSearchTerms: terms.
+					sa = sb
+						ifTrue: [ a selectorSymbol asString <= b selectorSymbol asString ]
+						ifFalse: [ sa > sb ] ] ])
+		asArray
 ]
 
 { #category : 'accessing' }
