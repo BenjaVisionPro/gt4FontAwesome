@@ -279,14 +279,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:37:36.578847+11:00"
+						"dateAndTimeString" : "2026-03-17T14:44:23.137436+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "2KejnWdVTpGQyqyMfL6/fg=="
 				},
-				"code" : "(CFFontAwesomeIcons style: 'regular') icon: #ampGuitar"
+				"code" : "(CFFontAwesomeIcons style: 'regular') icon: 'ampGuitar'"
 			},
 			{
 				"__type" : "textSnippet",
