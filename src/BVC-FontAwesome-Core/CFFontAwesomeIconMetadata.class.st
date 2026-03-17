@@ -104,59 +104,40 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValu
 
 { #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
-	| root samplesRow details rightColumn smallRow smallRowWidth mediumRow |
+	| root samplesRow details rightColumn smallRow mediumSample |
 	root := BrVerticalPane new
 		cellSpacing: 10;
-		matchParent;
+		fitContent;
 		padding: (BlInsets all: 10);
 		yourself.
 
 	samplesRow := BrHorizontalPane new
 		cellSpacing: 10;
-		constraintsDo: [ :c |
-			c horizontal fitContent.
-			c vertical fitContent ];
+		fitContent;
 		yourself.
 
 	rightColumn := BrVerticalPane new
 		cellSpacing: 10;
-		constraintsDo: [ :c |
-			c horizontal fitContent.
-			c vertical fitContent ];
+		fitContent;
 		yourself.
 
-	smallRowWidth := (self gtSpotterPreviewFrameExtentForHeight: 24)
-		+ 10
-		+ (self gtSpotterPreviewFrameExtentForHeight: 16).
-
-	smallRow := BlElement new
-		layout: BlFrameLayout new;
-		constraintsDo: [ :c |
-			c horizontal exact: smallRowWidth.
-			c vertical exact: (self gtSpotterPreviewFrameExtentForHeight: 24) ];
+	smallRow := BrHorizontalPane new
+		cellSpacing: 10;
+		fitContent;
 		yourself.
-	smallRow
-		addChild: (self gtSpotterPreviewSampleForHeight: 24);
-		addChild: (self gtSpotterPreviewSampleForHeight: 16).
-	(smallRow children first) constraintsDo: [ :c |
-		c frame horizontal alignLeft.
-		c frame vertical alignBottom ].
-	(smallRow children second) constraintsDo: [ :c |
-		c frame horizontal alignRight.
-		c frame vertical alignBottom ].
+	smallRow addChildren: {
+		(self gtSpotterPreviewSampleForHeight: 24).
+		(self gtSpotterPreviewSampleForHeight: 16) }.
+	smallRow children do: [ :each |
+		each constraintsDo: [ :c | c linear vertical alignBottom ] ].
 
-	mediumRow := BlElement new
-		layout: BlFrameLayout new;
-		constraintsDo: [ :c |
-			c horizontal exact: smallRowWidth.
-			c vertical exact: (self gtSpotterPreviewFrameExtentForHeight: 48) ];
-		addChild: (self gtSpotterPreviewSampleForHeight: 48);
-		yourself.
-	mediumRow children first constraintsDo: [ :c |
-		c frame horizontal alignCenter.
-		c frame vertical alignBottom ].
+	mediumSample := self gtSpotterPreviewSampleForHeight: 48.
+	mediumSample constraintsDo: [ :c |
+		c linear horizontal alignCenter ].
 
-	rightColumn addChildren: { smallRow. mediumRow }.
+	rightColumn addChildren: {
+		smallRow.
+		mediumSample }.
 
 	samplesRow addChildren: {
 		(self gtSpotterPreviewSampleForHeight: 96).
@@ -183,30 +164,12 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIconMetadata >> gtSpotterPreviewFrameExtentForHeight: aHeight [
-	^ aHeight + 18
-]
-
-{ #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewSampleForHeight: aHeight [
-	| container iconElement frameExtent |
-	frameExtent := self gtSpotterPreviewFrameExtentForHeight: aHeight.
-	iconElement := CFMaFontAwesomeBuilderUtility
+	^ (CFMaFontAwesomeBuilderUtility
 		newFontAwesomeIconForMetadata: self
 		styleName: self preferredStyleName
-		fitInto: aHeight @ aHeight.
-	iconElement constraintsDo: [ :c |
-		c frame horizontal alignCenter.
-		c frame vertical alignBottom ].
-
-	container := BlElement new
-		layout: BlFrameLayout new;
-		constraintsDo: [ :c |
-			c horizontal exact: frameExtent.
-			c vertical exact: frameExtent ];
-		yourself.
-	container addChild: iconElement.
-	^ container
+		fitInto: aHeight @ aHeight)
+			constraintsDo: [ :c | c linear vertical alignBottom ]
 ]
 
 { #category : 'accessing' }
