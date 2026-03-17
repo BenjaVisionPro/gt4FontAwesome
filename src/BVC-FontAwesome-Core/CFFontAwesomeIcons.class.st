@@ -155,7 +155,7 @@ CFFontAwesomeIcons class >> icon: aSelectorSymbol fitInto: anExtent color: aColo
 	icon := (self icon: aSelectorSymbol)
 		color: aColor;
 		yourself.
-	^ [ icon asScalableElementSized: (icon extentFittingInto: anExtent) ] asStencil
+	^ [ icon fitInto: anExtent ] asStencil
 ]
 
 { #category : 'instance creation' }
@@ -164,7 +164,7 @@ CFFontAwesomeIcons class >> icon: aSelectorSymbol height: aNumber color: aColor 
 	icon := (self icon: aSelectorSymbol)
 		color: aColor;
 		yourself.
-	^ [ icon asScalableElementSized: (icon extentForHeight: aNumber) ] asStencil
+	^ [ icon height: aNumber ] asStencil
 ]
 
 { #category : 'instance creation' }
@@ -185,7 +185,7 @@ CFFontAwesomeIcons class >> icon: aSelectorSymbol width: aNumber color: aColor [
 	icon := (self icon: aSelectorSymbol)
 		color: aColor;
 		yourself.
-	^ [ icon asScalableElementSized: (icon extentForWidth: aNumber) ] asStencil
+	^ [ icon width: aNumber ] asStencil
 ]
 
 { #category : 'instance creation' }

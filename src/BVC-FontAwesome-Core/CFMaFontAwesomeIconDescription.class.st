@@ -154,8 +154,7 @@ CFMaFontAwesomeIconDescription >> isFontAwesomeIconDescription [
 
 { #category : 'icons' }
 CFMaFontAwesomeIconDescription >> scaledElementForIcon: aFontAwesomeIcon [
-	^ aFontAwesomeIcon
-		asScalableElementSized: (self displayExtentForIntrinsicExtent: aFontAwesomeIcon intrinsicExtent)
+	^ self applySizingToIconElement: aFontAwesomeIcon
 ]
 
 { #category : 'accessing' }

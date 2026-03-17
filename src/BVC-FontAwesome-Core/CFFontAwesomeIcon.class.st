@@ -6,6 +6,8 @@ Class {
 	#name : 'CFFontAwesomeIcon',
 	#superclass : 'BlElement',
 	#instVars : [
+		'drawingElement',
+		'scalableElement',
 		'pathElements',
 		'pathRoles',
 		'pathOpacities',
@@ -43,7 +45,8 @@ CFFontAwesomeIcon >> asElement [
 
 { #category : 'converting' }
 CFFontAwesomeIcon >> asScalableElementSized: anExtent [
-	^ self asElement asScalableElement size: anExtent
+	self size: anExtent.
+	^ self
 ]
 
 { #category : 'converting' }
@@ -102,13 +105,13 @@ CFFontAwesomeIcon >> extentForWidth: aNumber [
 
 { #category : 'sizing' }
 CFFontAwesomeIcon >> fitInto: anExtent [
-	self resizeTo: (self extentFittingInto: anExtent).
+	self size: anExtent.
 	^ self
 ]
 
 { #category : 'sizing' }
 CFFontAwesomeIcon >> height: aNumber [
-	self resizeTo: (self extentForHeight: aNumber).
+	self size: (self extentForHeight: aNumber).
 	^ self
 ]
 
@@ -125,9 +128,16 @@ CFFontAwesomeIcon >> initializeName: aSelector styleKey: aStyleKey unicode: aUni
 	label := aLabelString.
 	viewBox := aRectangle.
 
+	self layout: BlFrameLayout new.
+
 	pathElements := OrderedCollection new.
 	pathRoles := OrderedCollection new.
 	pathOpacities := OrderedCollection new.
+	drawingElement := BlElement new
+		size: aRectangle extent;
+		yourself.
+	scalableElement := drawingElement asScalableElement.
+	self addChild: scalableElement.
 
 	pathSpecs
 		do: [ :eachSpec | 
@@ -136,13 +146,14 @@ CFFontAwesomeIcon >> initializeName: aSelector styleKey: aStyleKey unicode: aUni
 			opacity := eachSpec at: #opacity ifAbsent: [ 1.0 ].
 			element := BlElement new
 					geometry: (BlSvgPath new svg: (eachSpec at: #path) viewbox: aRectangle);
+					size: aRectangle extent;
 					yourself.
-			self addChild: element.
+			drawingElement addChild: element.
 			pathElements add: element.
 			pathRoles add: role.
 			pathOpacities add: opacity ].
 
-	self resizeTo: aRectangle extent.
+	self size: aRectangle extent.
 
 	primaryColor := Color black.
 	secondaryColor := Color black.
@@ -167,17 +178,17 @@ CFFontAwesomeIcon >> primaryColor: aColor [
 	^ self
 ]
 
-{ #category : 'private' }
-CFFontAwesomeIcon >> resizeTo: anExtent [
-	self size: anExtent.
-	pathElements do: [ :each | each size: anExtent ].
-	^ self
-]
-
 { #category : 'styling' }
 CFFontAwesomeIcon >> secondaryColor: aColor [
 	secondaryColor := aColor.
 	self applyColors.
+	^ self
+]
+
+{ #category : 'sizing' }
+CFFontAwesomeIcon >> size: anExtent [
+	super size: anExtent.
+	scalableElement ifNotNil: [ scalableElement size: anExtent ].
 	^ self
 ]
 
@@ -198,6 +209,6 @@ CFFontAwesomeIcon >> viewBox [
 
 { #category : 'sizing' }
 CFFontAwesomeIcon >> width: aNumber [
-	self resizeTo: (self extentForWidth: aNumber).
+	self size: (self extentForWidth: aNumber).
 	^ self
 ]

@@ -35,7 +35,7 @@ CFMaFontAwesomeBuilderUtility class >> newFontAwesomeIconForMetadata: anIconMeta
 			icon: anIconMetadata selectorSymbol
 			styleName: aStyleName.
 		icon color: Color black.
-		icon asScalableElementSized: (icon extentFittingInto: anExtent) ]
+		icon fitInto: anExtent ]
 		on: Error
 		do: [ BrLabel new
 				aptitude: BrLabelAptitude new;
