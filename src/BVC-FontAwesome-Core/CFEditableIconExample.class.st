@@ -27,6 +27,6 @@ CFEditableIconExample >> iconDescription [
 		default: #addressCard;
 		priority: 5;
 		styleName: 'light';      "Optional if you want to override the default style"
-		iconHeight: 64;          "Shouldn't be here and will go away - descriptions should not know about presentation"
+		iconHeight: 64;          "Shouldn't be here and will go away. just being lazy. TODO: descriptions have no knowledge of presentation"
 		yourself
 ]
