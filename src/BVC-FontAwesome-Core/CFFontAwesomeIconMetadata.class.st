@@ -119,17 +119,17 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 		padding: (BlInsets all: 2);
 		yourself.
 
+	samplesContainer := BrFrame new
+		fitContent;
+		yourself.
+	samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName).
+
 	styleToggleGroup := self
 		gtSpotterPreviewStyleToggleGroupForSelectedStyle: currentStyleName
 		whenActivated: [ :aStyleName |
 			currentStyleName := aStyleName.
 			samplesContainer removeChildren.
 			samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName) ].
-
-	samplesContainer := BrFrame new
-		fitContent;
-		yourself.
-	samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName).
 
 	details := BrVerticalPane new
 		cellSpacing: 4;
