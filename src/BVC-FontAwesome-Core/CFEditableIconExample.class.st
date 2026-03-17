@@ -26,7 +26,7 @@ CFEditableIconExample >> iconDescription [
 		label: 'Icon';
 		default: #addressCard;
 		priority: 5;
-		styleName: 'light';
+		styleName: 'duotone';
 		iconHeight: 32;
 		yourself
 ]
