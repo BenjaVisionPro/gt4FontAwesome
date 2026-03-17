@@ -98,6 +98,71 @@ CFFontAwesomeIcons class >> gtDefaultStyleActionFor: anAction [
 ]
 
 { #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtFilterTooltip [
+	self gtIconsFilterQuery isEmpty ifTrue: [ ^ 'Filter icons' ].
+	^ 'Filter icons: ', self gtIconsFilterQuery
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconAssociationsMatching: aString [
+	| availableIconsBySelector activeStyleName |
+	(aString ifNil: [ '' ]) trimBoth isEmpty ifTrue: [ ^ self availableIcons ].
+	availableIconsBySelector := Dictionary new.
+	self availableIcons do: [ :eachAssociation |
+		availableIconsBySelector
+			at: eachAssociation key
+			put: eachAssociation ].
+	activeStyleName := self styleNameOrDefault: self styleName.
+	^ ((self metadata
+		searchIconsMatching: aString
+		satisfying: [ :each | each supportsStyleNamed: activeStyleName ])
+		collect: [ :each |
+			availableIconsBySelector
+				at: each selectorSymbol
+				ifAbsent: [ nil ] ])
+		reject: [ :each | each isNil ]
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsClearFilter [
+	self gtIconsFilterQuery: ''
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsFilterButtonFor: aButton [
+	^ (GtSpotterDropdownButtonStencil new
+		icon: BrGlamorousVectorIcons search;
+		tooltip: self gtFilterTooltip;
+		object: self;
+		extent: [ 520 @ 430 ];
+		spotterModelDo: [ :aSpotter |
+			aSpotter currentStep searchQuery: self gtIconsFilterQuery.
+			aSpotter currentStep
+				when: GtSpotterStepSearchQueryChanged
+				do: [ :anAnnouncement |
+					self gtIconsFilterQuery: aSpotter currentStep searchQuery ] ];
+		objectActOn: [ :anActOnEvent :anItem :theButton |
+			self gtIconsFilterQuery: anActOnEvent spotterStep searchQuery.
+			anActOnEvent beActed.
+			theButton fireEvent: BrDropdownHideWish new ];
+		asElement)
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsFilterQuery [
+	^ GtIconsFilterQuery ifNil: [ '' ]
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconsFilterQuery: aString [
+	| normalized |
+	normalized := (aString ifNil: [ '' ]) trimBoth.
+	GtIconsFilterQuery = normalized ifTrue: [ ^ self ].
+	GtIconsFilterQuery := normalized.
+	self announceGtIconsFilterChanged
+]
+
+{ #category : 'gt extensions' }
 CFFontAwesomeIcons class >> gtIconsFor: aView [
 	<gtView>
 	<gtClassView>
@@ -133,71 +198,6 @@ CFFontAwesomeIcons class >> gtIconsFor: aView [
 			self gtIconsFilterButtonFor: aButton ]
 			tooltip: self gtFilterTooltip;
 		send: #value
-]
-
-{ #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtIconAssociationsMatching: aString [
-	| availableIconsBySelector activeStyleName |
-	(aString ifNil: [ '' ]) trimBoth isEmpty ifTrue: [ ^ self availableIcons ].
-	availableIconsBySelector := Dictionary new.
-	self availableIcons do: [ :eachAssociation |
-		availableIconsBySelector
-			at: eachAssociation key
-			put: eachAssociation ].
-	activeStyleName := self styleNameOrDefault: self styleName.
-	^ ((self metadata
-		searchIconsMatching: aString
-		satisfying: [ :each | each supportsStyleNamed: activeStyleName ])
-		collect: [ :each |
-			availableIconsBySelector
-				at: each selectorSymbol
-				ifAbsent: [ nil ] ])
-		reject: [ :each | each isNil ]
-]
-
-{ #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtIconsClearFilter [
-	self gtIconsFilterQuery: ''
-]
-
-{ #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtIconsFilterQuery [
-	^ GtIconsFilterQuery ifNil: [ '' ]
-]
-
-{ #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtIconsFilterQuery: aString [
-	| normalized |
-	normalized := (aString ifNil: [ '' ]) trimBoth.
-	GtIconsFilterQuery = normalized ifTrue: [ ^ self ].
-	GtIconsFilterQuery := normalized.
-	self announceGtIconsFilterChanged
-]
-
-{ #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtIconsFilterButtonFor: aButton [
-	^ (GtSpotterDropdownButtonStencil new
-		icon: BrGlamorousVectorIcons search;
-		tooltip: self gtFilterTooltip;
-		object: self;
-		extent: [ 520 @ 430 ];
-		spotterModelDo: [ :aSpotter |
-			aSpotter currentStep searchQuery: self gtIconsFilterQuery.
-			aSpotter currentStep
-				when: GtSpotterStepSearchQueryChanged
-				do: [ :anAnnouncement |
-					self gtIconsFilterQuery: aSpotter currentStep searchQuery ] ];
-		objectActOn: [ :anActOnEvent :anItem :theButton |
-			self gtIconsFilterQuery: anActOnEvent spotterStep searchQuery.
-			anActOnEvent beActed.
-			theButton fireEvent: BrDropdownHideWish new ];
-		asElement)
-]
-
-{ #category : 'gt extensions' }
-CFFontAwesomeIcons class >> gtFilterTooltip [
-	self gtIconsFilterQuery isEmpty ifTrue: [ ^ 'Filter icons' ].
-	^ 'Filter icons: ', self gtIconsFilterQuery
 ]
 
 { #category : 'gt extensions' }

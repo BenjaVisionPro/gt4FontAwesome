@@ -106,23 +106,23 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValu
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 	| root samplesRow details rightColumn smallRow mediumSample |
 	root := BrVerticalPane new
-		cellSpacing: 10;
+		cellSpacing: 4;
 		fitContent;
-		padding: (BlInsets all: 10);
+		padding: (BlInsets all: 2);
 		yourself.
 
 	samplesRow := BrHorizontalPane new
-		cellSpacing: 10;
+		cellSpacing: 4;
 		fitContent;
 		yourself.
 
 	rightColumn := BrVerticalPane new
-		cellSpacing: 10;
+		cellSpacing: 4;
 		fitContent;
 		yourself.
 
 	smallRow := BrHorizontalPane new
-		cellSpacing: 10;
+		cellSpacing: 4;
 		fitContent;
 		yourself.
 	smallRow addChildren: {
