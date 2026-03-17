@@ -279,14 +279,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:37:36.578847+11:00"
+						"dateAndTimeString" : "2026-03-17T14:44:03.060806+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "2KejnWdVTpGQyqyMfL6/fg=="
 				},
-				"code" : "(CFFontAwesomeIcons style: 'regular') icon: #ampGuitar"
+				"code" : "(CFFontAwesomeIcons style: 'regular') icon: 'ampGuitar'"
 			},
 			{
 				"__type" : "textSnippet",
@@ -418,7 +418,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T13:20:21.677814+11:00"
+						"dateAndTimeString" : "2026-03-17T13:20:37.465327+11:00"
 					}
 				},
 				"uid" : {
@@ -428,7 +428,7 @@
 				"paragraphStyle" : {
 					"__type" : "textStyle"
 				},
-				"string" : "There is also a magritte based icon viewer / selector. Icons are stored "
+				"string" : "There is also a magritte based icon viewer / selector."
 			},
 			{
 				"__type" : "pharoSnippet",
