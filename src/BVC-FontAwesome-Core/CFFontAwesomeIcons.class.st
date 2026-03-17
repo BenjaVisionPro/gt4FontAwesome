@@ -92,35 +92,12 @@ CFFontAwesomeIcons class >> gtDefaultStyleActionFor: anAction [
 CFFontAwesomeIcons class >> gtIconsFor: aView [
 	<gtView>
 	<gtClassView>
-	^ aView list
+	^ aView explicit
 		title: 'Icons';
 		priority: -10;
-		items: [ self availableIcons ];
-		updateWhen: CFFontAwesomeDefaultStyleChangedAnnouncement in: [ self announcer ];
-		itemStencil: [ BlElement new
-				layout: BlLinearLayout horizontal;
-				margin: (BlInsets all: 3);
-				constraintsDo: [ :c |
-					c vertical fitContent.
-					c horizontal matchParent ];
-				addChild: (BlElement new size: 64 @ 64) as: #icon;
-				addChild: (BrLabel new
-							aptitude: BrGlamorousLabelAptitude;
-							constraintsDo: [ :c | c linear vertical alignCenter ];
-							padding: (BlInsets left: 20 right: 3))
-					as: #label ];
-		itemDataBinder: [ :anElement :anIcon :anIndex |
-			| icon iconElement |
-			icon := self icon: anIcon key.
-			iconElement := icon asScalableElementSized: (icon extentFittingInto: 64 @ 64).
-			anElement
-				replaceChild: (anElement childNamed: #icon)
-				with: iconElement
-				as: #icon.
-			(anElement childNamed: #label) text: anIcon key asString.
-			anElement ];
-		actionUpdateButtonTooltip: 'Update icon list';
-		send: #value
+		stencil: [ CFFontAwesomeIconsViewElement new
+				iconLibraryClass: self;
+				yourself ]
 ]
 
 { #category : 'gt extensions' }
@@ -134,6 +111,22 @@ CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 				allIcons: self availableIcons ];
 		itemName: #iconSelector;
 		filterBySubstring
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtIconAssociationsMatching: aString [
+	| availableIconsBySelector activeStyleName |
+	(aString ifNil: [ '' ]) trimBoth isEmpty ifTrue: [ ^ self availableIcons ].
+	availableIconsBySelector := self availableIcons asDictionary.
+	activeStyleName := self styleNameOrDefault: self styleName.
+	^ ((self metadata
+		searchIconsMatching: aString
+		satisfying: [ :each | each supportsStyleNamed: activeStyleName ])
+		collect: [ :each |
+			availableIconsBySelector
+				at: each selectorSymbol
+				ifAbsent: [ nil ] ])
+		reject: [ :each | each isNil ]
 ]
 
 { #category : 'instance creation' }
