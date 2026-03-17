@@ -106,27 +106,27 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValu
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 	| root samplesRow details rightColumn smallRow |
 	root := BrVerticalPane new
-		cellSpacing: 12;
+		cellSpacing: 10;
 		matchParent;
 		padding: (BlInsets all: 10);
 		yourself.
 
 	samplesRow := BrHorizontalPane new
-		cellSpacing: 12;
+		cellSpacing: 10;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ];
 		yourself.
 
 	rightColumn := BrVerticalPane new
-		cellSpacing: 12;
+		cellSpacing: 10;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ];
 		yourself.
 
 	smallRow := BrHorizontalPane new
-		cellSpacing: 12;
+		cellSpacing: 10;
 		constraintsDo: [ :c |
 			c horizontal fitContent.
 			c vertical fitContent ];
@@ -163,8 +163,8 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 
 { #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewSampleForHeight: aHeight [
-	| container iconElement label frameExtent |
-	frameExtent := aHeight + 24.
+	| container iconElement frameExtent |
+	frameExtent := aHeight + 18.
 	iconElement := CFMaFontAwesomeBuilderUtility
 		newFontAwesomeIconForMetadata: self
 		styleName: self preferredStyleName
@@ -180,24 +180,7 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewSampleForHeight: aHeight [
 			c vertical exact: frameExtent ];
 		yourself.
 	container addChild: iconElement.
-
-	label := BrLabel new
-		aptitude: BrLabelAptitude new;
-		text: aHeight asString;
-		opacity: 0.6;
-		constraintsDo: [ :c |
-			c horizontal fitContent.
-			c vertical fitContent.
-			c linear horizontal alignCenter ];
-		yourself.
-
-	^ BrVerticalPane new
-		cellSpacing: 4;
-		constraintsDo: [ :c |
-			c horizontal fitContent.
-			c vertical fitContent ];
-		addChildren: { container. label };
-		yourself
+	^ container
 ]
 
 { #category : 'accessing' }
