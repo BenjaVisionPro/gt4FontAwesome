@@ -139,7 +139,11 @@ CFFontAwesomeIcons class >> gtIconsFor: aView [
 CFFontAwesomeIcons class >> gtIconAssociationsMatching: aString [
 	| availableIconsBySelector activeStyleName |
 	(aString ifNil: [ '' ]) trimBoth isEmpty ifTrue: [ ^ self availableIcons ].
-	availableIconsBySelector := self availableIcons asDictionary.
+	availableIconsBySelector := Dictionary new.
+	self availableIcons do: [ :eachAssociation |
+		availableIconsBySelector
+			at: eachAssociation key
+			put: eachAssociation ].
 	activeStyleName := self styleNameOrDefault: self styleName.
 	^ ((self metadata
 		searchIconsMatching: aString
