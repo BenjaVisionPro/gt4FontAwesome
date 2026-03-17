@@ -73,6 +73,19 @@ CFFontAwesomeIconMetadata >> gtLiveFor: aView [
 
 { #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValue [
+	^ self
+		gtSpotterPreviewDetailRowLabel: aLabel
+		content: (BrLabel new
+				aptitude: BrGlamorousLabelAptitude;
+				text: aValue;
+				constraintsDo: [ :c |
+					c horizontal matchParent.
+					c vertical fitContent ];
+				yourself)
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel content: aContentElement [
 	| row keyLabel valueLabel |
 	row := BrHorizontalPane new
 		cellSpacing: 8;
@@ -90,13 +103,7 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValu
 			c vertical fitContent ];
 		yourself.
 
-	valueLabel := BrLabel new
-		aptitude: BrGlamorousLabelAptitude;
-		text: aValue;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical fitContent ];
-		yourself.
+	valueLabel := aContentElement.
 
 	row addChildren: { keyLabel. valueLabel }.
 	^ row
@@ -104,13 +111,55 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValu
 
 { #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
-	| root samplesRow details rightColumn smallRow mediumSample |
+	| currentStyleName root samplesContainer details |
+	currentStyleName := self preferredStyleName.
 	root := BrVerticalPane new
 		cellSpacing: 4;
 		fitContent;
 		padding: (BlInsets all: 2);
 		yourself.
 
+	samplesContainer := BrFrame new
+		fitContent;
+		yourself.
+	samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName).
+
+	details := BrVerticalPane new
+		cellSpacing: 4;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		yourself.
+	details addChildren: {
+		(self
+			gtSpotterPreviewDetailRowLabel: 'Style'
+			content: (self
+				gtSpotterPreviewStyleToggleGroupForSelectedStyle: currentStyleName
+				whenActivated: [ :aStyleName |
+					currentStyleName := aStyleName.
+					samplesContainer removeChildren.
+					samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName) ])).
+		(self gtSpotterPreviewDetailRowLabel: 'Selector' value: self selectorSymbol asString).
+		(self gtSpotterPreviewDetailRowLabel: 'FA name' value: (self fontAwesomeName ifNil: [ '' ])).
+		(self gtSpotterPreviewDetailRowLabel: 'Categories' value: (' , ' join: self categories)).
+		(self gtSpotterPreviewDetailRowLabel: 'Search' value: (' , ' join: (self searchTerms collect: #asString))) }.
+
+	root addChildren: { samplesContainer. details }.
+	^ root
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewSampleForHeight: aHeight styleName: aStyleName [
+	^ (CFMaFontAwesomeBuilderUtility
+		newFontAwesomeIconForMetadata: self
+		styleName: aStyleName
+		fitInto: aHeight @ aHeight)
+			constraintsDo: [ :c | c linear vertical alignBottom ]
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewSamplesForStyleName: aStyleName [
+	| samplesRow rightColumn smallRow mediumSample |
 	samplesRow := BrHorizontalPane new
 		cellSpacing: 4;
 		fitContent;
@@ -126,12 +175,12 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 		fitContent;
 		yourself.
 	smallRow addChildren: {
-		(self gtSpotterPreviewSampleForHeight: 24).
-		(self gtSpotterPreviewSampleForHeight: 16) }.
+		(self gtSpotterPreviewSampleForHeight: 24 styleName: aStyleName).
+		(self gtSpotterPreviewSampleForHeight: 16 styleName: aStyleName) }.
 	smallRow children do: [ :each |
 		each constraintsDo: [ :c | c linear vertical alignBottom ] ].
 
-	mediumSample := self gtSpotterPreviewSampleForHeight: 48.
+	mediumSample := self gtSpotterPreviewSampleForHeight: 48 styleName: aStyleName.
 	mediumSample constraintsDo: [ :c |
 		c linear horizontal alignCenter ].
 
@@ -140,36 +189,43 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 		mediumSample }.
 
 	samplesRow addChildren: {
-		(self gtSpotterPreviewSampleForHeight: 96).
+		(self gtSpotterPreviewSampleForHeight: 96 styleName: aStyleName).
 		rightColumn }.
 	(samplesRow children first) constraintsDo: [ :c | c linear vertical alignBottom ].
 	(samplesRow children second) constraintsDo: [ :c | c linear vertical alignBottom ].
-
-	details := BrVerticalPane new
-		cellSpacing: 4;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical fitContent ];
-		yourself.
-	details addChildren: {
-		(self gtSpotterPreviewDetailRowLabel: 'Selector' value: self selectorSymbol asString).
-		(self gtSpotterPreviewDetailRowLabel: 'FA name' value: (self fontAwesomeName ifNil: [ '' ])).
-		(self gtSpotterPreviewDetailRowLabel: 'Style' value: self preferredStyleName).
-		(self gtSpotterPreviewDetailRowLabel: 'Styles' value: (' , ' join: self styles)).
-		(self gtSpotterPreviewDetailRowLabel: 'Categories' value: (' , ' join: self categories)).
-		(self gtSpotterPreviewDetailRowLabel: 'Search' value: (' , ' join: (self searchTerms collect: #asString))) }.
-
-	root addChildren: { samplesRow. details }.
-	^ root
+	^ samplesRow
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIconMetadata >> gtSpotterPreviewSampleForHeight: aHeight [
-	^ (CFMaFontAwesomeBuilderUtility
-		newFontAwesomeIconForMetadata: self
-		styleName: self preferredStyleName
-		fitInto: aHeight @ aHeight)
-			constraintsDo: [ :c | c linear vertical alignBottom ]
+CFFontAwesomeIconMetadata >> gtSpotterPreviewStyleToggleFor: aStyleName selectedStyleName: aSelectedStyleName whenActivated: aBlock [
+	| toggle |
+	toggle := BrToggle new
+		aptitude: BrGlamorousToggleWithIconAptitude new;
+		icon: (CFMaFontAwesomeBuilderUtility
+				newFontAwesomeIconForMetadata: self
+				styleName: aStyleName
+				fitInto: 14 @ 14);
+		label: aStyleName capitalized;
+		when: BrToggleActivatedEvent
+			do: [ :anEvent | aBlock value: anEvent model ];
+		yourself.
+	toggle viewModel model: aStyleName.
+	aStyleName = aSelectedStyleName ifTrue: [ toggle activate ].
+	^ toggle
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewStyleToggleGroupForSelectedStyle: aStyleName whenActivated: aBlock [
+	| toggleGroup |
+	toggleGroup := BrToggleGroup new
+		aptitude: BrGlamorousToggleGroupAptitude new;
+		yourself.
+	self styles do: [ :eachStyleName |
+		toggleGroup addToggle: (self
+			gtSpotterPreviewStyleToggleFor: eachStyleName
+			selectedStyleName: aStyleName
+			whenActivated: aBlock) ].
+	^ toggleGroup
 ]
 
 { #category : 'accessing' }
