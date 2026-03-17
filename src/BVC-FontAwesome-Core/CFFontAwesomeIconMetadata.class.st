@@ -104,7 +104,7 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValu
 
 { #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
-	| root samplesRow details |
+	| root samplesRow details rightColumn smallRow |
 	root := BrVerticalPane new
 		cellSpacing: 12;
 		matchParent;
@@ -117,8 +117,31 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 			c horizontal fitContent.
 			c vertical fitContent ];
 		yourself.
-	#(24 48 96) do: [ :eachHeight |
-		samplesRow addChild: (self gtSpotterPreviewSampleForHeight: eachHeight) ].
+
+	rightColumn := BrVerticalPane new
+		cellSpacing: 12;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ];
+		yourself.
+
+	smallRow := BrHorizontalPane new
+		cellSpacing: 12;
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical fitContent ];
+		yourself.
+	smallRow addChildren: {
+		(self gtSpotterPreviewSampleForHeight: 24).
+		(self gtSpotterPreviewSampleForHeight: 16) }.
+
+	rightColumn addChildren: {
+		smallRow.
+		(self gtSpotterPreviewSampleForHeight: 48) }.
+
+	samplesRow addChildren: {
+		(self gtSpotterPreviewSampleForHeight: 96).
+		rightColumn }.
 
 	details := BrVerticalPane new
 		cellSpacing: 4;
