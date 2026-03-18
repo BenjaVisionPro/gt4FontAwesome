@@ -169,6 +169,7 @@ CFFontAwesomeGoldenPreviewElement >> layoutForCurrentWidth [
 	topRightCell size: topRightWidth @ topCompositeHeight.
 	bottomRightCell size: rightWidth @ bottomHeight.
 
+	root forceLayout.
 	self refreshCells
 ]
 
