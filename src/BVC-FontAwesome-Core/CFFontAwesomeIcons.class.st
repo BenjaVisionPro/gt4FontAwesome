@@ -217,11 +217,13 @@ CFFontAwesomeIcons class >> spotterHeaderLogoElement [
 	^ [ | icon |
 	icon := (CFFontAwesomeIcons style: 'brands') icon: #fontAwesomeLogoFull.
 		(icon asScalableElementSized: (icon extentFittingInto: 180 @ 28))
+			border: (self spotterHeaderDebugBorderForColor: Color green);
 			opacity: 0.85;
 			yourself ]
 		on: Error
 		do: [ BrLabel new
 				aptitude: BrLabelAptitude new;
+				border: (self spotterHeaderDebugBorderForColor: Color green);
 				text: 'Font Awesome';
 				opacity: 0.6;
 				fitContent;
@@ -229,21 +231,32 @@ CFFontAwesomeIcons class >> spotterHeaderLogoElement [
 ]
 
 { #category : 'private - gt' }
+CFFontAwesomeIcons class >> spotterHeaderDebugBorderForColor: aColor [
+	^ BlBorder paint: (aColor alpha: 0.7) width: 1
+]
+
+{ #category : 'private - gt' }
 CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
-	| breadcrumb firstItem |
-	breadcrumb := aSpotterElement children
+	| headerElement topRow breadcrumb firstItem |
+	headerElement := aSpotterElement children
 		ifEmpty: [ ^ self ]
-		ifNotEmpty: [ :children |
-			children first children
-				ifEmpty: [ ^ self ]
-				ifNotEmpty: [ :headerChildren | headerChildren first children first ] ].
+		ifNotEmpty: [ :children | children first ].
+	topRow := headerElement children
+		ifEmpty: [ ^ self ]
+		ifNotEmpty: [ :headerChildren | headerChildren first ].
+	breadcrumb := topRow children
+		ifEmpty: [ ^ self ]
+		ifNotEmpty: [ :rowChildren | rowChildren first ].
 	firstItem := [ breadcrumb aptitude itemElements first ]
 		on: Error
 		do: [ ^ self ].
+	headerElement border: (self spotterHeaderDebugBorderForColor: Color orange).
+	topRow border: (self spotterHeaderDebugBorderForColor: Color yellow).
+	breadcrumb border: (self spotterHeaderDebugBorderForColor: Color blue).
 	firstItem
+		border: (self spotterHeaderDebugBorderForColor: Color red);
 		aptitude: BrGlamorousButtonIconAptitude new;
 		background: Color transparent;
-		border: BlBorder empty;
 		padding: BlInsets empty;
 		constraintsDo: [ :c |
 			c vertical exact: 40.
