@@ -38,7 +38,8 @@ CFFontAwesomeGoldenPreviewCellElement >> initialize [
 	isIconVisible := false.
 	self
 		border: self previewDebugBorder;
-		layout: BlFrameLayout new
+		layout: BlFrameLayout new;
+		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshIcon ]
 ]
 
 { #category : 'private' }
