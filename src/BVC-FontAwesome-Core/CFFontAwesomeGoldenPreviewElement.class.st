@@ -18,7 +18,8 @@ Class {
 		'topRightCell',
 		'bottomRightCell',
 		'lastLaidOutWidth',
-		'initialRevealPending'
+		'initialRevealPending',
+		'hasBeenInitiallyRevealed'
 	],
 	#category : 'BVC-FontAwesome-Core',
 	#package : 'BVC-FontAwesome-Core'
@@ -136,6 +137,7 @@ CFFontAwesomeGoldenPreviewElement >> iconMetadata: anIconMetadata [
 CFFontAwesomeGoldenPreviewElement >> initialize [
 	super initialize.
 	initialRevealPending := false.
+	hasBeenInitiallyRevealed := false.
 	self
 		border: self previewDebugBorder;
 		cellSpacing: 0;
@@ -210,13 +212,17 @@ CFFontAwesomeGoldenPreviewElement >> layoutForCurrentWidth [
 		c horizontal exact: rightWidth.
 		c vertical exact: bottomHeight ].
 
-	(self visibility = BlVisibility hidden and: [ initialRevealPending not ])
-		ifTrue: [
-			initialRevealPending := true.
-			self enqueueTask: (BlTaskAction new action: [
+	hasBeenInitiallyRevealed ifTrue: [ ^ self ].
+
+	self visibility: BlVisibility hidden.
+	initialRevealPending := true.
+	self enqueueTask: (BlTaskAction new action: [
+		((self extent x asFloat - currentWidth) abs < 0.5)
+			ifTrue: [
 				initialRevealPending := false.
+				hasBeenInitiallyRevealed := true.
 				self refreshCells.
-				self visibility: BlVisibility visible ]) ]
+				self visibility: BlVisibility visible ] ])
 ]
 
 { #category : 'private' }
