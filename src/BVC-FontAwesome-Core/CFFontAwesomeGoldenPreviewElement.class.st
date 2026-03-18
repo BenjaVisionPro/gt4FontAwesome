@@ -59,6 +59,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 
 	leftCell := self newPreviewCell.
 	leftCell constraintsDo: [ :c |
+		c horizontal matchParent.
 		c vertical matchParent.
 		c linear weight: self goldenRatio ].
 
@@ -66,6 +67,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
+			c horizontal matchParent.
 			c vertical matchParent.
 			c linear weight: 1 ];
 		yourself.
@@ -82,6 +84,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
+			c horizontal matchParent.
 			c vertical matchParent.
 			c linear weight: 1 ];
 		yourself.
@@ -98,6 +101,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
+			c horizontal matchParent.
 			c vertical matchParent.
 			c linear weight: 1 ];
 		yourself.
@@ -105,10 +109,12 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 	topMiddleCell := self newPreviewCell.
 	topMiddleCell constraintsDo: [ :c |
 		c horizontal matchParent.
+		c vertical matchParent.
 		c linear weight: self goldenRatio ].
 
 	mediumCell := self newPreviewCell.
 	mediumCell constraintsDo: [ :c |
+		c horizontal matchParent.
 		c vertical matchParent.
 		c linear weight: self goldenRatio ].
 
@@ -124,12 +130,14 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 
 	topRightCell := self newPreviewCell.
 	topRightCell constraintsDo: [ :c |
+		c horizontal matchParent.
 		c vertical matchParent.
 		c linear weight: self goldenRatio ].
 
 	bottomRightCell := self newPreviewCell.
 	bottomRightCell constraintsDo: [ :c |
 		c horizontal matchParent.
+		c vertical matchParent.
 		c linear weight: self goldenRatio ].
 
 	smallColumn addChildren: { smallTopCell. smallBottomCell }.
