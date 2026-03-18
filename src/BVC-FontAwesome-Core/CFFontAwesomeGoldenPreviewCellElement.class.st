@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'iconMetadata',
 		'styleName',
-		'lastRenderedExtent',
-		'lastRenderedStyleName'
+		'iconElement',
+		'isIconVisible'
 	],
 	#category : 'BVC-FontAwesome-Core',
 	#package : 'BVC-FontAwesome-Core'
@@ -27,7 +27,9 @@ CFFontAwesomeGoldenPreviewCellElement >> iconMetadata [
 { #category : 'accessing' }
 CFFontAwesomeGoldenPreviewCellElement >> iconMetadata: anIconMetadata [
 	iconMetadata := anIconMetadata.
-	lastRenderedExtent := nil.
+	iconElement := nil.
+	self removeChildren.
+	isIconVisible := false.
 	self refreshIcon
 ]
 
@@ -37,6 +39,7 @@ CFFontAwesomeGoldenPreviewCellElement >> initialize [
 	self
 		layout: BlFrameLayout new;
 		padding: (BlInsets all: 0);
+		isIconVisible := false;
 		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshIcon ]
 ]
 
@@ -46,15 +49,13 @@ CFFontAwesomeGoldenPreviewCellElement >> minimumIconExtent [
 ]
 
 { #category : 'private' }
-CFFontAwesomeGoldenPreviewCellElement >> newIconFitting: anExtent [
+CFFontAwesomeGoldenPreviewCellElement >> newIconElement [
 	| icon |
-	icon := CFMaFontAwesomeBuilderUtility
-		newFontAwesomeIconForMetadata: iconMetadata
-		styleName: styleName
-		fitInto: anExtent.
-	icon constraintsDo: [ :c |
-		c frame horizontal alignCenter.
-		c frame vertical alignCenter ].
+	icon := iconMetadata iconLibraryClass
+		icon: iconMetadata selectorSymbol
+		styleName: styleName.
+	icon color: Color black.
+	icon matchParent.
 	^ icon
 ]
 
@@ -63,22 +64,27 @@ CFFontAwesomeGoldenPreviewCellElement >> refreshIcon [
 	| currentExtent |
 	(iconMetadata isNil or: [ styleName isNil ]) ifTrue: [
 		self removeChildren.
+		iconElement := nil.
+		isIconVisible := false.
 		^ self ].
 
 	currentExtent := self extent.
 	((currentExtent x <= 0) or: [ currentExtent y <= 0 ]) ifTrue: [
-		self removeChildren.
 		^ self ].
 
-	((lastRenderedExtent = currentExtent)
-		and: [ lastRenderedStyleName = styleName ]) ifTrue: [ ^ self ].
+	(currentExtent x min: currentExtent y) < self minimumIconExtent
+		ifTrue: [
+			isIconVisible ifTrue: [
+				self removeChildren.
+				isIconVisible := false ].
+			^ self ].
 
-	lastRenderedExtent := currentExtent.
-	lastRenderedStyleName := styleName.
-	self removeChildren.
+	iconElement ifNil: [
+		iconElement := self newIconElement ].
 
-	(currentExtent x min: currentExtent y) < self minimumIconExtent ifTrue: [ ^ self ].
-	self addChild: (self newIconFitting: currentExtent)
+	isIconVisible ifFalse: [
+		self addChild: iconElement.
+		isIconVisible := true ]
 ]
 
 { #category : 'accessing' }
@@ -89,6 +95,8 @@ CFFontAwesomeGoldenPreviewCellElement >> styleName [
 { #category : 'accessing' }
 CFFontAwesomeGoldenPreviewCellElement >> styleName: aStyleName [
 	styleName := aStyleName.
-	lastRenderedStyleName := nil.
+	iconElement := nil.
+	self removeChildren.
+	isIconVisible := false.
 	self refreshIcon
 ]
