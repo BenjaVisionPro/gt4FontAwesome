@@ -237,7 +237,7 @@ CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
 			children first children
 				ifEmpty: [ ^ self ]
 				ifNotEmpty: [ :headerChildren | headerChildren first children first ] ].
-	firstItem := [ breadcrumb itemAt: 1 ]
+	firstItem := [ breadcrumb aptitude itemElements first ]
 		on: Error
 		do: [ ^ self ].
 	firstItem
