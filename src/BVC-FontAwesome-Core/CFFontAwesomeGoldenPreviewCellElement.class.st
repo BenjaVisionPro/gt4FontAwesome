@@ -38,6 +38,7 @@ CFFontAwesomeGoldenPreviewCellElement >> initialize [
 	super initialize.
 	isIconVisible := false.
 	self
+		border: self previewDebugBorder;
 		layout: BlFrameLayout new;
 		padding: (BlInsets all: 0);
 		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshIcon ]
@@ -46,6 +47,11 @@ CFFontAwesomeGoldenPreviewCellElement >> initialize [
 { #category : 'private' }
 CFFontAwesomeGoldenPreviewCellElement >> minimumIconExtent [
 	^ 12
+]
+
+{ #category : 'private' }
+CFFontAwesomeGoldenPreviewCellElement >> previewDebugBorder [
+	^ BlBorder paint: (Color red alpha: 0.6) width: 1
 ]
 
 { #category : 'private' }

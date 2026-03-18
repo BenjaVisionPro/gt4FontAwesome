@@ -50,6 +50,7 @@ CFFontAwesomeGoldenPreviewElement >> applyCellMetadataAndStyle [
 { #category : 'private' }
 CFFontAwesomeGoldenPreviewElement >> buildLayout [
 	root := BrHorizontalPane new
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -62,6 +63,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		c linear weight: self goldenRatio ].
 
 	rightColumn := BrVerticalPane new
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c vertical matchParent.
@@ -69,6 +71,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		yourself.
 
 	topRow := BrHorizontalPane new
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -76,6 +79,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		yourself.
 
 	topMiddleColumn := BrVerticalPane new
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c vertical matchParent.
@@ -83,6 +87,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		yourself.
 
 	lowerBandRow := BrHorizontalPane new
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -90,6 +95,7 @@ CFFontAwesomeGoldenPreviewElement >> buildLayout [
 		yourself.
 
 	smallColumn := BrVerticalPane new
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c vertical matchParent.
@@ -156,6 +162,7 @@ CFFontAwesomeGoldenPreviewElement >> iconMetadata: anIconMetadata [
 CFFontAwesomeGoldenPreviewElement >> initialize [
 	super initialize.
 	self
+		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -177,6 +184,11 @@ CFFontAwesomeGoldenPreviewElement >> layoutForCurrentWidth [
 	root constraintsDo: [ :c |
 		c horizontal matchParent.
 		c vertical exact: desiredHeight ]
+]
+
+{ #category : 'private' }
+CFFontAwesomeGoldenPreviewElement >> previewDebugBorder [
+	^ BlBorder paint: (Color blue alpha: 0.6) width: 1
 ]
 
 { #category : 'private' }

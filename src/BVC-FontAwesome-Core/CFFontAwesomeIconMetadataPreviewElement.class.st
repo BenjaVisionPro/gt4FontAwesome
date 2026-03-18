@@ -34,6 +34,9 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 	samplesContainer := CFFontAwesomeGoldenPreviewElement
 		forMetadata: iconMetadata
 		styleName: currentStyleName.
+	samplesContainer constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical fitContent ].
 
 	styleToggleGroup := self newStyleToggleGroup.
 	styleToggleGroup constraintsDo: [ :c |
