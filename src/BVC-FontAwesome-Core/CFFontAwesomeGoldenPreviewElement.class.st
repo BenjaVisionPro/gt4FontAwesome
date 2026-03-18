@@ -17,9 +17,7 @@ Class {
 		'smallBottomCell',
 		'topRightCell',
 		'bottomRightCell',
-		'lastLaidOutWidth',
-		'initialRevealPending',
-		'hasBeenInitiallyRevealed'
+		'lastLaidOutWidth'
 	],
 	#category : 'BVC-FontAwesome-Core',
 	#package : 'BVC-FontAwesome-Core'
@@ -53,50 +51,38 @@ CFFontAwesomeGoldenPreviewElement >> applyCellMetadataAndStyle [
 CFFontAwesomeGoldenPreviewElement >> buildLayout [
 	root := BrHorizontalPane new
 		border: self previewDebugBorder;
-		constraintsDo: [ :c |
-			c horizontal exact: 0.
-			c vertical exact: 0 ];
+		size: 0 @ 0;
 		yourself.
 
 	leftCell := self newPreviewCell.
 	rightColumn := BrVerticalPane new
 		border: self previewDebugBorder;
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: 0.
-			c vertical exact: 0 ];
+		size: 0 @ 0;
 		yourself.
 
 	topCompositeRow := BrHorizontalPane new
 		border: self previewDebugBorder;
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: 0.
-			c vertical exact: 0 ];
+		size: 0 @ 0;
 		yourself.
 
 	leftCompositeColumn := BrVerticalPane new
 		border: self previewDebugBorder;
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: 0.
-			c vertical exact: 0 ];
+		size: 0 @ 0;
 		yourself.
 
 	lowerBandRow := BrHorizontalPane new
 		border: self previewDebugBorder;
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: 0.
-			c vertical exact: 0 ];
+		size: 0 @ 0;
 		yourself.
 
 	smallColumn := BrVerticalPane new
 		border: self previewDebugBorder;
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: 0.
-			c vertical exact: 0 ];
+		size: 0 @ 0;
 		yourself.
 
 	topMiddleCell := self newPreviewCell.
@@ -136,33 +122,30 @@ CFFontAwesomeGoldenPreviewElement >> iconMetadata: anIconMetadata [
 { #category : 'initialization' }
 CFFontAwesomeGoldenPreviewElement >> initialize [
 	super initialize.
-	initialRevealPending := false.
-	hasBeenInitiallyRevealed := false.
 	self
 		border: self previewDebugBorder;
 		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];
-		visibility: BlVisibility hidden;
 		when: BlElementExtentChangedEvent do: [ :anEvent | self layoutForCurrentWidth ].
 	self buildLayout
 ]
 
 { #category : 'private' }
 CFFontAwesomeGoldenPreviewElement >> layoutForCurrentWidth [
-	| bottomHeight currentWidth desiredHeight leftCompositeWidth leftWidth lowerBandHeight mediumWidth rightWidth smallBottomHeight smallColumnWidth smallTopHeight topCompositeHeight topMiddleHeight topRightWidth |
-	currentWidth := self extent x asFloat.
-	currentWidth <= 0 ifTrue: [ ^ self ].
-	lastLaidOutWidth = currentWidth ifTrue: [ ^ self ].
+	| bottomHeight leftCompositeWidth leftWidth lowerBandHeight mediumWidth panelHeight panelWidth rightWidth smallBottomHeight smallColumnWidth smallTopHeight topCompositeHeight topMiddleHeight topRightWidth |
+	panelWidth := self extent x asFloat.
+	panelWidth <= 0 ifTrue: [ ^ self ].
+	lastLaidOutWidth = panelWidth ifTrue: [ ^ self ].
 
-	lastLaidOutWidth := currentWidth.
-	desiredHeight := currentWidth / self goldenRatio.
+	lastLaidOutWidth := panelWidth.
+	panelHeight := panelWidth / self goldenRatio.
 
-	leftWidth := desiredHeight.
-	rightWidth := currentWidth - leftWidth.
+	leftWidth := panelHeight.
+	rightWidth := panelWidth - leftWidth.
 	bottomHeight := rightWidth.
-	topCompositeHeight := desiredHeight - bottomHeight.
+	topCompositeHeight := panelHeight - bottomHeight.
 	topRightWidth := topCompositeHeight.
 	leftCompositeWidth := rightWidth - topRightWidth.
 	topMiddleHeight := leftCompositeWidth.
@@ -172,57 +155,21 @@ CFFontAwesomeGoldenPreviewElement >> layoutForCurrentWidth [
 	smallBottomHeight := smallColumnWidth.
 	smallTopHeight := lowerBandHeight - smallBottomHeight.
 
-	root constraintsDo: [ :c |
-		c horizontal exact: currentWidth.
-		c vertical exact: desiredHeight ].
-	leftCell constraintsDo: [ :c |
-		c horizontal exact: leftWidth.
-		c vertical exact: desiredHeight ].
-	rightColumn constraintsDo: [ :c |
-		c horizontal exact: rightWidth.
-		c vertical exact: desiredHeight ].
-	topCompositeRow constraintsDo: [ :c |
-		c horizontal exact: rightWidth.
-		c vertical exact: topCompositeHeight ].
-	leftCompositeColumn constraintsDo: [ :c |
-		c horizontal exact: leftCompositeWidth.
-		c vertical exact: topCompositeHeight ].
-	topMiddleCell constraintsDo: [ :c |
-		c horizontal exact: leftCompositeWidth.
-		c vertical exact: topMiddleHeight ].
-	lowerBandRow constraintsDo: [ :c |
-		c horizontal exact: leftCompositeWidth.
-		c vertical exact: lowerBandHeight ].
-	mediumCell constraintsDo: [ :c |
-		c horizontal exact: mediumWidth.
-		c vertical exact: lowerBandHeight ].
-	smallColumn constraintsDo: [ :c |
-		c horizontal exact: smallColumnWidth.
-		c vertical exact: lowerBandHeight ].
-	smallTopCell constraintsDo: [ :c |
-		c horizontal exact: smallColumnWidth.
-		c vertical exact: smallTopHeight ].
-	smallBottomCell constraintsDo: [ :c |
-		c horizontal exact: smallColumnWidth.
-		c vertical exact: smallBottomHeight ].
-	topRightCell constraintsDo: [ :c |
-		c horizontal exact: topRightWidth.
-		c vertical exact: topCompositeHeight ].
-	bottomRightCell constraintsDo: [ :c |
-		c horizontal exact: rightWidth.
-		c vertical exact: bottomHeight ].
+	root size: panelWidth @ panelHeight.
+	leftCell size: leftWidth @ panelHeight.
+	rightColumn size: rightWidth @ panelHeight.
+	topCompositeRow size: rightWidth @ topCompositeHeight.
+	leftCompositeColumn size: leftCompositeWidth @ topCompositeHeight.
+	topMiddleCell size: leftCompositeWidth @ topMiddleHeight.
+	lowerBandRow size: leftCompositeWidth @ lowerBandHeight.
+	mediumCell size: mediumWidth @ lowerBandHeight.
+	smallColumn size: smallColumnWidth @ lowerBandHeight.
+	smallTopCell size: smallColumnWidth @ smallTopHeight.
+	smallBottomCell size: smallColumnWidth @ smallBottomHeight.
+	topRightCell size: topRightWidth @ topCompositeHeight.
+	bottomRightCell size: rightWidth @ bottomHeight.
 
-	hasBeenInitiallyRevealed ifTrue: [ ^ self ].
-
-	self visibility: BlVisibility hidden.
-	initialRevealPending := true.
-	self enqueueTask: (BlTaskAction new action: [
-		((self extent x asFloat - currentWidth) abs < 0.5)
-			ifTrue: [
-				initialRevealPending := false.
-				hasBeenInitiallyRevealed := true.
-				self refreshCells.
-				self visibility: BlVisibility visible ] ])
+	self refreshCells
 ]
 
 { #category : 'private' }
