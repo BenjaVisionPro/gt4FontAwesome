@@ -245,7 +245,9 @@ CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
 		background: Color transparent;
 		border: BlBorder empty;
 		padding: BlInsets empty;
-		constraintsDo: [ :c | c linear vertical alignCenter ];
+		constraintsDo: [ :c |
+			c vertical exact: 40.
+			c linear vertical alignCenter ];
 		icon: self spotterHeaderLogoElement;
 		label: '';
 		action: [ :anElement :aButtonModel :anEvent | ]
