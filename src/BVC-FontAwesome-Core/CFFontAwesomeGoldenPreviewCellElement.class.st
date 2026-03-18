@@ -50,11 +50,6 @@ CFFontAwesomeGoldenPreviewCellElement >> minimumIconExtent [
 ]
 
 { #category : 'private' }
-CFFontAwesomeGoldenPreviewCellElement >> previewDebugBorder [
-	^ BlBorder paint: (Color red alpha: 0.6) width: 1
-]
-
-{ #category : 'private' }
 CFFontAwesomeGoldenPreviewCellElement >> newIconElement [
 	| icon |
 	icon := iconMetadata iconLibraryClass
@@ -62,9 +57,14 @@ CFFontAwesomeGoldenPreviewCellElement >> newIconElement [
 		styleName: styleName.
 	icon color: Color black.
 	icon constraintsDo: [ :c |
-		c horizontal matchParent.
-		c vertical matchParent ].
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
 	^ icon
+]
+
+{ #category : 'private' }
+CFFontAwesomeGoldenPreviewCellElement >> previewDebugBorder [
+	^ BlBorder paint: (Color red alpha: 0.6) width: 1
 ]
 
 { #category : 'private' }
@@ -77,8 +77,7 @@ CFFontAwesomeGoldenPreviewCellElement >> refreshIcon [
 		^ self ].
 
 	currentExtent := self extent.
-	((currentExtent x <= 0) or: [ currentExtent y <= 0 ]) ifTrue: [
-		^ self ].
+	((currentExtent x <= 0) or: [ currentExtent y <= 0 ]) ifTrue: [ ^ self ].
 
 	(currentExtent x min: currentExtent y) < self minimumIconExtent
 		ifTrue: [
@@ -89,6 +88,7 @@ CFFontAwesomeGoldenPreviewCellElement >> refreshIcon [
 
 	iconElement ifNil: [
 		iconElement := self newIconElement ].
+	iconElement fitInto: currentExtent.
 
 	isIconVisible ifFalse: [
 		self addChild: iconElement.
