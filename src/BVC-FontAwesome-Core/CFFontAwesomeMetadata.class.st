@@ -55,7 +55,7 @@ CFFontAwesomeMetadata >> gtSearchForFontAwesomeIconsFor: aSearch satisfying: aBl
 				satisfying: aBlock ];
 		itemsLimit: Float infinity;
 		itemName: [ :each | each selectorSymbol asString ];
-		previewElement: [ :each | each gtSpotterPreviewElement ];
+		previewElement: [ :each | each asSpotterPreviewElement ];
 		send: [ :each :step :search | each ];
 		filter: [ :aSpotterContext | GtSpotterNoFilter new ];
 		wantsToDisplayOnEmptyQuery: true;
