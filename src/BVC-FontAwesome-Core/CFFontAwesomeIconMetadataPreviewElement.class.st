@@ -31,13 +31,14 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];
+		border: self previewDebugBorder;
 		yourself.
 
 	samplesContainer := BrFrame new
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];
-		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshSamplesForExtentChange ];
+		border: self previewDebugBorder;
 		yourself.
 	self refreshSamples.
 
@@ -51,6 +52,7 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];
+		border: self previewDebugBorder;
 		yourself.
 	details addChildren: {
 		(self newDetailRowLabel: 'Selector' value: iconMetadata selectorSymbol asString).
@@ -80,7 +82,8 @@ CFFontAwesomeIconMetadataPreviewElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];
-		padding: (BlInsets all: 2)
+		padding: (BlInsets all: 0);
+		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshSamplesForExtentChange ]
 ]
 
 { #category : 'private - geometry' }
@@ -154,6 +157,7 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 		constraintsDo: [ :c |
 			c horizontal exact: aWidth.
 			c vertical exact: height ];
+		border: self previewDebugBorder;
 		yourself.
 
 	largeCell := self newPreviewCellWidth: leftWidth height: height styleName: aStyleName.
@@ -162,6 +166,7 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 		constraintsDo: [ :c |
 			c horizontal exact: rightWidth.
 			c vertical exact: height ];
+		border: self previewDebugBorder;
 		yourself.
 
 	topRow := BrHorizontalPane new
@@ -169,6 +174,7 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 		constraintsDo: [ :c |
 			c horizontal exact: rightWidth.
 			c vertical exact: topHeight ];
+		border: self previewDebugBorder;
 		yourself.
 
 	topMiddleCell := BrVerticalPane new
@@ -176,6 +182,7 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 		constraintsDo: [ :c |
 			c horizontal exact: topMiddleWidth.
 			c vertical exact: topHeight ];
+		border: self previewDebugBorder;
 		yourself.
 	topMiddleCell addChild: (self newPreviewCellWidth: topMiddleWidth height: topMiddleHeight styleName: aStyleName).
 
@@ -184,6 +191,7 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 		constraintsDo: [ :c |
 			c horizontal exact: smallColumnWidth.
 			c vertical exact: lowerBandHeight ];
+		border: self previewDebugBorder;
 		yourself.
 	smallTopCell := self newPreviewCellWidth: smallColumnWidth height: smallTopHeight styleName: aStyleName.
 	smallBottomCell := self newPreviewCellWidth: smallColumnWidth height: smallBottomHeight styleName: aStyleName.
@@ -195,6 +203,7 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 		constraintsDo: [ :c |
 			c horizontal exact: topMiddleWidth.
 			c vertical exact: lowerBandHeight ];
+		border: self previewDebugBorder;
 		addChildren: { mediumCell. smallColumn };
 		yourself).
 
@@ -211,14 +220,15 @@ CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleN
 CFFontAwesomeIconMetadataPreviewElement >> newPreviewCellWidth: aWidth height: aHeight styleName: aStyleName [
 	| cell contentExtent icon |
 	cell := BrFrame new
-		padding: (BlInsets all: 6);
+		padding: (BlInsets all: 0);
 		layout: BlFrameLayout new;
 		constraintsDo: [ :c |
 			c horizontal exact: (aWidth max: 0).
 			c vertical exact: (aHeight max: 0) ];
+		border: self previewDebugBorder;
 		yourself.
 
-	contentExtent := ((aWidth - 12) max: 0) @ ((aHeight - 12) max: 0).
+	contentExtent := (aWidth max: 0) @ (aHeight max: 0).
 	(contentExtent x min: contentExtent y) < self minimumPreviewIconExtent ifTrue: [ ^ cell ].
 
 	icon := CFMaFontAwesomeBuilderUtility
@@ -271,6 +281,11 @@ CFFontAwesomeIconMetadataPreviewElement >> onStyleActivated: aStyleName [
 { #category : 'private - geometry' }
 CFFontAwesomeIconMetadataPreviewElement >> minimumPreviewIconExtent [
 	^ 12
+]
+
+{ #category : 'private - styling' }
+CFFontAwesomeIconMetadataPreviewElement >> previewDebugBorder [
+	^ BlBorder paint: (Color blue alpha: 0.45) width: 1
 ]
 
 { #category : 'private - updating' }
