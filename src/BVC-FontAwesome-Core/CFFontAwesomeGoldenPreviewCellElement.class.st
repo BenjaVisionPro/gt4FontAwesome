@@ -55,7 +55,9 @@ CFFontAwesomeGoldenPreviewCellElement >> newIconElement [
 		icon: iconMetadata selectorSymbol
 		styleName: styleName.
 	icon color: Color black.
-	icon matchParent.
+	icon constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent ].
 	^ icon
 ]
 
