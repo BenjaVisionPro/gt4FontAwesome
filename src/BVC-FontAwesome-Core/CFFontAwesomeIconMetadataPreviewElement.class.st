@@ -81,19 +81,6 @@ CFFontAwesomeIconMetadataPreviewElement >> initialize [
 ]
 
 { #category : 'private - instance creation' }
-CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel value: aValue [
-	^ self
-		newDetailRowLabel: aLabel
-		content: (BrLabel new
-				aptitude: BrGlamorousLabelAptitude;
-				text: aValue;
-				constraintsDo: [ :c |
-					c horizontal matchParent.
-					c vertical fitContent ];
-				yourself)
-]
-
-{ #category : 'private - instance creation' }
 CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel content: aContentElement [
 	| row keyLabel |
 	row := BrHorizontalPane new
@@ -114,6 +101,19 @@ CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel content: aC
 
 	row addChildren: { keyLabel. aContentElement }.
 	^ row
+]
+
+{ #category : 'private - instance creation' }
+CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel value: aValue [
+	^ self
+		newDetailRowLabel: aLabel
+		content: (BrLabel new
+				aptitude: BrGlamorousLabelAptitude;
+				text: aValue;
+				constraintsDo: [ :c |
+					c horizontal matchParent.
+					c vertical fitContent ];
+				yourself)
 ]
 
 { #category : 'private - instance creation' }

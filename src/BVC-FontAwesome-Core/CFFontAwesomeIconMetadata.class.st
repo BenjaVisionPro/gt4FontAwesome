@@ -15,6 +15,11 @@ Class {
 }
 
 { #category : 'accessing' }
+CFFontAwesomeIconMetadata >> asSpotterPreviewElement [
+	^ CFFontAwesomeIconMetadataPreviewElement forMetadata: self
+]
+
+{ #category : 'accessing' }
 CFFontAwesomeIconMetadata >> categories [
 	^ categories
 ]
@@ -69,11 +74,6 @@ CFFontAwesomeIconMetadata >> gtLiveFor: aView [
 			GtInspectorElementLiveViewContainer new
 				element: (icon asScalableElementSized: (icon extentForHeight: 64));
 				clipChildren: false ]
-]
-
-{ #category : 'accessing' }
-CFFontAwesomeIconMetadata >> asSpotterPreviewElement [
-	^ CFFontAwesomeIconMetadataPreviewElement forMetadata: self
 ]
 
 { #category : 'accessing' }

@@ -51,7 +51,6 @@ CFFontAwesomeGoldenPreviewElement >> applyCellMetadataAndStyle [
 CFFontAwesomeGoldenPreviewElement >> buildLayout [
 	root := BrHorizontalPane new
 		border: self previewDebugBorder;
-		cellSpacing: 0;
 		constraintsDo: [ :c |
 			c horizontal exact: 0.
 			c vertical exact: 0 ];
@@ -140,7 +139,6 @@ CFFontAwesomeGoldenPreviewElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];
-		padding: (BlInsets all: 0);
 		when: BlElementExtentChangedEvent do: [ :anEvent | self layoutForCurrentWidth ].
 	self buildLayout
 ]
@@ -218,7 +216,7 @@ CFFontAwesomeGoldenPreviewElement >> newPreviewCell [
 
 { #category : 'private' }
 CFFontAwesomeGoldenPreviewElement >> previewDebugBorder [
-	^ BlBorder paint: (Color blue alpha: 0.6) width: 1
+	^ BlBorder paint: (Color blue alpha: 0.6) width: 0
 ]
 
 { #category : 'accessing' }

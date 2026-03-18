@@ -38,9 +38,8 @@ CFFontAwesomeGoldenPreviewCellElement >> initialize [
 	super initialize.
 	isIconVisible := false.
 	self
-		border: self previewDebugBorder;
+		"border: self previewDebugBorder;"
 		layout: BlFrameLayout new;
-		padding: (BlInsets all: 4);
 		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshIcon ]
 ]
 
@@ -69,30 +68,28 @@ CFFontAwesomeGoldenPreviewCellElement >> previewDebugBorder [
 
 { #category : 'private' }
 CFFontAwesomeGoldenPreviewCellElement >> refreshIcon [
-	| currentExtent |
-	(iconMetadata isNil or: [ styleName isNil ]) ifTrue: [
-		self removeChildren.
-		iconElement := nil.
-		isIconVisible := false.
-		^ self ].
-
-	currentExtent := self extent.
-	((currentExtent x <= 0) or: [ currentExtent y <= 0 ]) ifTrue: [ ^ self ].
+	| currentExtent iconInset |
+	(iconMetadata isNil or: [ styleName isNil ])
+		ifTrue: [ self removeChildren.
+			iconElement := nil.
+			isIconVisible := false.
+			^ self ].
+	iconInset := 12@12.
+	currentExtent := self extent - iconInset.
+	(currentExtent x <= 0 or: [ currentExtent y <= 0 ]) ifTrue: [ ^ self ].
 
 	(currentExtent x min: currentExtent y) < self minimumIconExtent
-		ifTrue: [
-			isIconVisible ifTrue: [
-				self removeChildren.
-				isIconVisible := false ].
+		ifTrue: [ isIconVisible
+				ifTrue: [ self removeChildren.
+					isIconVisible := false ].
 			^ self ].
 
-	iconElement ifNil: [
-		iconElement := self newIconElement ].
+	iconElement ifNil: [ iconElement := self newIconElement ].
 	iconElement fitInto: currentExtent.
 
-	isIconVisible ifFalse: [
-		self addChild: iconElement.
-		isIconVisible := true ]
+	isIconVisible
+		ifFalse: [ self addChild: iconElement.
+			isIconVisible := true ]
 ]
 
 { #category : 'accessing' }
