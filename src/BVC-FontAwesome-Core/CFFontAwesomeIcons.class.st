@@ -214,25 +214,30 @@ CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 
 { #category : 'private - gt' }
 CFFontAwesomeIcons class >> spotterHeaderLogoElement [
-	^ [ | icon |
+	^ [ | icon logo wrapper |
 	icon := (CFFontAwesomeIcons style: 'brands') icon: #fontAwesomeLogoFull.
-		(icon asScalableElementSized: (icon extentFittingInto: 180 @ 28))
-			border: (self spotterHeaderDebugBorderForColor: Color green);
+	logo := (icon asScalableElementSized: (icon extentFittingInto: 180 @ 28))
 			opacity: 0.85;
-			yourself ]
+			yourself.
+	wrapper := BlElement new
+		layout: BlFrameLayout new;
+		padding: (BlInsets left: 10);
+		constraintsDo: [ :c |
+			c horizontal fitContent.
+			c vertical exact: 40 ];
+		yourself.
+	logo constraintsDo: [ :c |
+		c frame horizontal alignLeft.
+		c frame vertical alignCenter ].
+	wrapper addChild: logo.
+	^ wrapper ]
 		on: Error
 		do: [ BrLabel new
 				aptitude: BrLabelAptitude new;
-				border: (self spotterHeaderDebugBorderForColor: Color green);
 				text: 'Font Awesome';
 				opacity: 0.6;
 				fitContent;
 				yourself ]
-]
-
-{ #category : 'private - gt' }
-CFFontAwesomeIcons class >> spotterHeaderDebugBorderForColor: aColor [
-	^ BlBorder paint: (aColor alpha: 0.7) width: 1
 ]
 
 { #category : 'private - gt' }
@@ -250,15 +255,12 @@ CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
 	firstItem := [ breadcrumb aptitude itemElements first ]
 		on: Error
 		do: [ ^ self ].
-	headerElement border: (self spotterHeaderDebugBorderForColor: Color orange).
-	topRow border: (self spotterHeaderDebugBorderForColor: Color yellow).
-	breadcrumb border: (self spotterHeaderDebugBorderForColor: Color blue).
 	firstItem
-		border: (self spotterHeaderDebugBorderForColor: Color red);
 		aptitude: BrGlamorousButtonIconAptitude new;
 		background: Color transparent;
 		padding: BlInsets empty;
 		constraintsDo: [ :c |
+			c horizontal fitContent.
 			c vertical exact: 40.
 			c linear vertical alignCenter ];
 		icon: self spotterHeaderLogoElement;
