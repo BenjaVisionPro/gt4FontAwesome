@@ -5,7 +5,20 @@ Class {
 		'iconMetadata',
 		'currentStyleName',
 		'samplesContainer',
-		'renderedSamplesWidth'
+		'renderedSamplesWidth',
+		'previewRoot',
+		'previewLargeCell',
+		'previewTopMiddleCell',
+		'previewMediumCell',
+		'previewSmallTopCell',
+		'previewSmallBottomCell',
+		'previewTopRightCell',
+		'previewBottomRightCell',
+		'previewRightColumn',
+		'previewTopRow',
+		'previewTopMiddleColumn',
+		'previewLowerBandRow',
+		'previewSmallColumn'
 	],
 	#category : 'BVC-FontAwesome-Core',
 	#package : 'BVC-FontAwesome-Core'
@@ -40,6 +53,7 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 			c vertical fitContent ];
 		border: self previewDebugBorder;
 		yourself.
+	self buildSamplesPreview.
 	self refreshSamples.
 
 	styleToggleGroup := self newStyleToggleGroup.
@@ -128,118 +142,58 @@ CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel content: aC
 ]
 
 { #category : 'private - instance creation' }
-CFFontAwesomeIconMetadataPreviewElement >> newGoldenPreviewForStyleName: aStyleName width: aWidth [
-	| bottomHeight bottomRightCell height largeCell leftWidth lowerBandHeight mediumCell mediumWidth rightColumn rightWidth root smallBottomCell smallBottomHeight smallColumn smallColumnWidth smallTopCell smallTopHeight topHeight topMiddleCell topMiddleHeight topMiddleWidth topRightCell topRightWidth topRow |
-	height := (aWidth / self goldenRatio) floor.
-	height <= 0 ifTrue: [ ^ BrFrame new fitContent ].
-
-	leftWidth := height min: aWidth.
-	rightWidth := aWidth - leftWidth.
-	bottomHeight := rightWidth.
-	topHeight := height - bottomHeight.
-	topRightWidth := topHeight.
-
-	rightWidth <= 0 ifTrue: [ ^ self newPreviewCellWidth: aWidth height: height styleName: aStyleName ].
-
-	topRightWidth := topRightWidth max: 0.
-	topHeight := topHeight max: 0.
-
-	topMiddleWidth := (rightWidth - topRightWidth) max: 0.
-	topMiddleHeight := topMiddleWidth.
-	lowerBandHeight := (topHeight - topMiddleHeight) max: 0.
-	mediumWidth := lowerBandHeight.
-	smallColumnWidth := (topMiddleHeight - mediumWidth) max: 0.
-	smallBottomHeight := smallColumnWidth.
-	smallTopHeight := (lowerBandHeight - smallBottomHeight) max: 0.
-
-	root := BrHorizontalPane new
+CFFontAwesomeIconMetadataPreviewElement >> buildSamplesPreview [
+	previewRoot := BrHorizontalPane new
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: aWidth.
-			c vertical exact: height ];
 		border: self previewDebugBorder;
 		yourself.
 
-	largeCell := self newPreviewCellWidth: leftWidth height: height styleName: aStyleName.
-	rightColumn := BrVerticalPane new
+	previewLargeCell := self newPreviewCell.
+	previewRightColumn := BrVerticalPane new
 		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: rightWidth.
-			c vertical exact: height ];
+		border: self previewDebugBorder;
+		yourself.
+	previewTopRow := BrHorizontalPane new
+		cellSpacing: 0;
+		border: self previewDebugBorder;
+		yourself.
+	previewTopMiddleColumn := BrVerticalPane new
+		cellSpacing: 0;
+		border: self previewDebugBorder;
+		yourself.
+	previewLowerBandRow := BrHorizontalPane new
+		cellSpacing: 0;
+		border: self previewDebugBorder;
+		yourself.
+	previewSmallColumn := BrVerticalPane new
+		cellSpacing: 0;
 		border: self previewDebugBorder;
 		yourself.
 
-	topRow := BrHorizontalPane new
-		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: rightWidth.
-			c vertical exact: topHeight ];
-		border: self previewDebugBorder;
-		yourself.
+	previewTopMiddleCell := self newPreviewCell.
+	previewMediumCell := self newPreviewCell.
+	previewSmallTopCell := self newPreviewCell.
+	previewSmallBottomCell := self newPreviewCell.
+	previewTopRightCell := self newPreviewCell.
+	previewBottomRightCell := self newPreviewCell.
 
-	topMiddleCell := BrVerticalPane new
-		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: topMiddleWidth.
-			c vertical exact: topHeight ];
-		border: self previewDebugBorder;
-		yourself.
-	topMiddleCell addChild: (self newPreviewCellWidth: topMiddleWidth height: topMiddleHeight styleName: aStyleName).
+	previewSmallColumn addChildren: { previewSmallTopCell. previewSmallBottomCell }.
+	previewLowerBandRow addChildren: { previewMediumCell. previewSmallColumn }.
+	previewTopMiddleColumn addChildren: { previewTopMiddleCell. previewLowerBandRow }.
+	previewTopRow addChildren: { previewTopMiddleColumn. previewTopRightCell }.
+	previewRightColumn addChildren: { previewTopRow. previewBottomRightCell }.
+	previewRoot addChildren: { previewLargeCell. previewRightColumn }.
 
-	smallColumn := BrVerticalPane new
-		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: smallColumnWidth.
-			c vertical exact: lowerBandHeight ];
-		border: self previewDebugBorder;
-		yourself.
-	smallTopCell := self newPreviewCellWidth: smallColumnWidth height: smallTopHeight styleName: aStyleName.
-	smallBottomCell := self newPreviewCellWidth: smallColumnWidth height: smallBottomHeight styleName: aStyleName.
-	smallColumn addChildren: { smallTopCell. smallBottomCell }.
-
-	mediumCell := self newPreviewCellWidth: mediumWidth height: lowerBandHeight styleName: aStyleName.
-	topMiddleCell addChild: (BrHorizontalPane new
-		cellSpacing: 0;
-		constraintsDo: [ :c |
-			c horizontal exact: topMiddleWidth.
-			c vertical exact: lowerBandHeight ];
-		border: self previewDebugBorder;
-		addChildren: { mediumCell. smallColumn };
-		yourself).
-
-	topRightCell := self newPreviewCellWidth: topRightWidth height: topHeight styleName: aStyleName.
-	bottomRightCell := self newPreviewCellWidth: rightWidth height: bottomHeight styleName: aStyleName.
-
-	topRow addChildren: { topMiddleCell. topRightCell }.
-	rightColumn addChildren: { topRow. bottomRightCell }.
-	root addChildren: { largeCell. rightColumn }.
-	^ root
+	samplesContainer addChild: previewRoot
 ]
 
 { #category : 'private - instance creation' }
-CFFontAwesomeIconMetadataPreviewElement >> newPreviewCellWidth: aWidth height: aHeight styleName: aStyleName [
-	| cell contentExtent icon |
-	cell := BrFrame new
+CFFontAwesomeIconMetadataPreviewElement >> newPreviewCell [
+	^ BrFrame new
 		padding: (BlInsets all: 0);
 		layout: BlFrameLayout new;
-		constraintsDo: [ :c |
-			c horizontal exact: (aWidth max: 0).
-			c vertical exact: (aHeight max: 0) ];
 		border: self previewDebugBorder;
-		yourself.
-
-	contentExtent := (aWidth max: 0) @ (aHeight max: 0).
-	(contentExtent x min: contentExtent y) < self minimumPreviewIconExtent ifTrue: [ ^ cell ].
-
-	icon := CFMaFontAwesomeBuilderUtility
-		newFontAwesomeIconForMetadata: iconMetadata
-		styleName: aStyleName
-		fitInto: contentExtent.
-	icon constraintsDo: [ :c |
-		c frame horizontal alignCenter.
-		c frame vertical alignCenter ].
-	cell addChild: icon.
-	^ cell
+		yourself
 ]
 
 { #category : 'private - instance creation' }
@@ -295,9 +249,10 @@ CFFontAwesomeIconMetadataPreviewElement >> refreshSamples [
 	availableWidth := self samplesWidth.
 	availableWidth <= 0 ifTrue: [ ^ self ].
 
-	samplesContainer removeChildren.
-	samplesContainer addChild: (self newGoldenPreviewForStyleName: currentStyleName width: availableWidth).
-	renderedSamplesWidth := availableWidth
+	renderedSamplesWidth := availableWidth.
+	self
+		updatePreviewLayoutForWidth: availableWidth;
+		updatePreviewIconsForStyleName: currentStyleName.
 ]
 
 { #category : 'private - updating' }
@@ -312,8 +267,124 @@ CFFontAwesomeIconMetadataPreviewElement >> refreshSamplesForExtentChange [
 { #category : 'private - geometry' }
 CFFontAwesomeIconMetadataPreviewElement >> samplesWidth [
 	| width |
-	samplesContainer ifNil: [ ^ 0 ].
-	width := samplesContainer extent x rounded.
+	width := self extent x rounded.
 	width > 0 ifTrue: [ ^ width ].
-	^ self extent x rounded
+	samplesContainer ifNil: [ ^ 0 ].
+	^ samplesContainer extent x rounded
+]
+
+{ #category : 'private - updating' }
+CFFontAwesomeIconMetadataPreviewElement >> updatePreviewCell: aCell width: aWidth height: aHeight styleName: aStyleName [
+	| contentExtent icon |
+	aCell constraintsDo: [ :c |
+		c horizontal exact: (aWidth max: 0).
+		c vertical exact: (aHeight max: 0) ].
+
+	contentExtent := (aWidth max: 0) @ (aHeight max: 0).
+	aCell removeChildren.
+	(contentExtent x min: contentExtent y) < self minimumPreviewIconExtent ifTrue: [ ^ self ].
+
+	icon := CFMaFontAwesomeBuilderUtility
+		newFontAwesomeIconForMetadata: iconMetadata
+		styleName: aStyleName
+		fitInto: contentExtent.
+	icon constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+	aCell addChild: icon
+]
+
+{ #category : 'private - updating' }
+CFFontAwesomeIconMetadataPreviewElement >> updatePreviewIconsForStyleName: aStyleName [
+	| bottomHeight height leftWidth lowerBandHeight mediumWidth rightWidth smallBottomHeight smallColumnWidth smallTopHeight topHeight topMiddleHeight topMiddleWidth topRightWidth |
+	renderedSamplesWidth ifNil: [ ^ self ].
+
+	height := (renderedSamplesWidth / self goldenRatio) floor.
+	height <= 0 ifTrue: [ ^ self ].
+
+	leftWidth := height min: renderedSamplesWidth.
+	rightWidth := renderedSamplesWidth - leftWidth.
+	bottomHeight := rightWidth.
+	topHeight := (height - bottomHeight) max: 0.
+	topRightWidth := topHeight max: 0.
+
+	rightWidth <= 0 ifTrue: [
+		self updatePreviewCell: previewLargeCell width: renderedSamplesWidth height: height styleName: aStyleName.
+		^ self ].
+
+	topMiddleWidth := (rightWidth - topRightWidth) max: 0.
+	topMiddleHeight := topMiddleWidth.
+	lowerBandHeight := (topHeight - topMiddleHeight) max: 0.
+	mediumWidth := lowerBandHeight.
+	smallColumnWidth := (topMiddleHeight - mediumWidth) max: 0.
+	smallBottomHeight := smallColumnWidth.
+	smallTopHeight := (lowerBandHeight - smallBottomHeight) max: 0.
+
+	self updatePreviewCell: previewLargeCell width: leftWidth height: height styleName: aStyleName.
+	self updatePreviewCell: previewTopMiddleCell width: topMiddleWidth height: topMiddleHeight styleName: aStyleName.
+	self updatePreviewCell: previewMediumCell width: mediumWidth height: lowerBandHeight styleName: aStyleName.
+	self updatePreviewCell: previewSmallTopCell width: smallColumnWidth height: smallTopHeight styleName: aStyleName.
+	self updatePreviewCell: previewSmallBottomCell width: smallColumnWidth height: smallBottomHeight styleName: aStyleName.
+	self updatePreviewCell: previewTopRightCell width: topRightWidth height: topHeight styleName: aStyleName.
+	self updatePreviewCell: previewBottomRightCell width: rightWidth height: bottomHeight styleName: aStyleName
+]
+
+{ #category : 'private - updating' }
+CFFontAwesomeIconMetadataPreviewElement >> updatePreviewLayoutForWidth: aWidth [
+	| bottomHeight height leftWidth lowerBandHeight mediumWidth rightWidth smallBottomHeight smallColumnWidth smallTopHeight topHeight topMiddleHeight topMiddleWidth topRightWidth |
+	height := (aWidth / self goldenRatio) floor.
+	height <= 0 ifTrue: [ ^ self ].
+
+	leftWidth := height min: aWidth.
+	rightWidth := aWidth - leftWidth.
+	bottomHeight := rightWidth.
+	topHeight := (height - bottomHeight) max: 0.
+	topRightWidth := topHeight max: 0.
+	topMiddleWidth := (rightWidth - topRightWidth) max: 0.
+	topMiddleHeight := topMiddleWidth.
+	lowerBandHeight := (topHeight - topMiddleHeight) max: 0.
+	mediumWidth := lowerBandHeight.
+	smallColumnWidth := (topMiddleHeight - mediumWidth) max: 0.
+	smallBottomHeight := smallColumnWidth.
+	smallTopHeight := (lowerBandHeight - smallBottomHeight) max: 0.
+
+	previewRoot constraintsDo: [ :c |
+		c horizontal exact: aWidth.
+		c vertical exact: height ].
+	previewLargeCell constraintsDo: [ :c |
+		c horizontal exact: leftWidth.
+		c vertical exact: height ].
+	previewRightColumn constraintsDo: [ :c |
+		c horizontal exact: rightWidth.
+		c vertical exact: height ].
+	previewTopRow constraintsDo: [ :c |
+		c horizontal exact: rightWidth.
+		c vertical exact: topHeight ].
+	previewTopMiddleColumn constraintsDo: [ :c |
+		c horizontal exact: topMiddleWidth.
+		c vertical exact: topHeight ].
+	previewLowerBandRow constraintsDo: [ :c |
+		c horizontal exact: topMiddleWidth.
+		c vertical exact: lowerBandHeight ].
+	previewSmallColumn constraintsDo: [ :c |
+		c horizontal exact: smallColumnWidth.
+		c vertical exact: lowerBandHeight ].
+	previewTopMiddleCell constraintsDo: [ :c |
+		c horizontal exact: topMiddleWidth.
+		c vertical exact: topMiddleHeight ].
+	previewMediumCell constraintsDo: [ :c |
+		c horizontal exact: mediumWidth.
+		c vertical exact: lowerBandHeight ].
+	previewSmallTopCell constraintsDo: [ :c |
+		c horizontal exact: smallColumnWidth.
+		c vertical exact: smallTopHeight ].
+	previewSmallBottomCell constraintsDo: [ :c |
+		c horizontal exact: smallColumnWidth.
+		c vertical exact: smallBottomHeight ].
+	previewTopRightCell constraintsDo: [ :c |
+		c horizontal exact: topRightWidth.
+		c vertical exact: topHeight ].
+	previewBottomRightCell constraintsDo: [ :c |
+		c horizontal exact: rightWidth.
+		c vertical exact: bottomHeight ]
 ]
