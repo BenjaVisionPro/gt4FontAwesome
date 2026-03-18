@@ -36,10 +36,10 @@ CFFontAwesomeGoldenPreviewCellElement >> iconMetadata: anIconMetadata [
 { #category : 'initialization' }
 CFFontAwesomeGoldenPreviewCellElement >> initialize [
 	super initialize.
+	isIconVisible := false.
 	self
 		layout: BlFrameLayout new;
 		padding: (BlInsets all: 0);
-		isIconVisible := false;
 		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshIcon ]
 ]
 
