@@ -110,6 +110,14 @@ CFFontAwesomeMetadataImporter class >> defaultStyleName [
 	^ 'light'
 ]
 
+{ #category : 'importing' }
+CFFontAwesomeMetadataImporter class >> defaultStyleNameForImportedStyles: availableStyleNames [
+	(availableStyleNames includes: self defaultStyleName)
+		ifTrue: [ ^ self defaultStyleName ].
+	availableStyleNames ifEmpty: [ ^ self defaultStyleName ].
+	^ availableStyleNames first
+]
+
 { #category : 'private - styles' }
 CFFontAwesomeMetadataImporter class >> ensureStyleClassFor: aStyleName baseClass: aBaseClass packageName: aPackageName familyName: aFamilyName version: aVersionString [
 	| className styleClass |
@@ -156,6 +164,18 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference b
 
 { #category : 'importing' }
 CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference baseClass: aBaseClass packageName: aPackageName familyName: aFamilyName version: aVersionString [
+	^ self
+		importFromIconsJsonFile: aFileReference
+		baseClass: aBaseClass
+		packageName: aPackageName
+		familyName: aFamilyName
+		version: aVersionString
+		selectedStyleNames: nil
+		selectedCategoryNames: nil
+]
+
+{ #category : 'importing' }
+CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference baseClass: aBaseClass packageName: aPackageName familyName: aFamilyName version: aVersionString selectedStyleNames: selectedStyleNames selectedCategoryNames: selectedCategoryNames [
 	| rawMetadata selectorsByStyle fontAwesomeMetadata categoryMap |
 	rawMetadata := self readMetadataFrom: aFileReference.
 	categoryMap := self readCategoryMapFromIconsJsonFile: aFileReference.
@@ -163,6 +183,8 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference b
 	fontAwesomeMetadata := self
 		newMetadataForFamilyName: aFamilyName
 		version: aVersionString.
+	selectedStyleNames := self normalizedSelectedStyleNames: selectedStyleNames.
+	selectedCategoryNames := self normalizedSelectedCategoryNames: selectedCategoryNames.
 
 	rawMetadata keysAndValuesDo: [ :iconName :iconData |
 		self
@@ -173,6 +195,8 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference b
 			packageName: aPackageName
 			familyName: aFamilyName
 			version: aVersionString
+			selectedStyleNames: selectedStyleNames
+			selectedCategoryNames: selectedCategoryNames
 			selectorsByStyle: selectorsByStyle
 			fontAwesomeMetadata: fontAwesomeMetadata ].
 
@@ -180,7 +204,9 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference b
 
 	fontAwesomeMetadata styles: selectorsByStyle keys asSortedCollection asArray.
 	aBaseClass metadata: fontAwesomeMetadata.
-	aBaseClass defaultStyleName: self defaultStyleName.
+	fontAwesomeMetadata styles ifNotEmpty: [
+		aBaseClass defaultStyleName: (self defaultStyleNameForImportedStyles: fontAwesomeMetadata styles) ].
+	aBaseClass announceMetadataImported.
 
 	^ aBaseClass
 ]
@@ -216,29 +242,46 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference p
 ]
 
 { #category : 'importing' }
+CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference packageName: aPackageName familyName: aFamilyName version: aVersionString selectedStyleNames: selectedStyleNames selectedCategoryNames: selectedCategoryNames [
+	^ self
+		importFromIconsJsonFile: aFileReference
+		baseClass: CFFontAwesomeIcons
+		packageName: aPackageName
+		familyName: aFamilyName
+		version: aVersionString
+		selectedStyleNames: selectedStyleNames
+		selectedCategoryNames: selectedCategoryNames
+]
+
+{ #category : 'importing' }
 CFFontAwesomeMetadataImporter class >> importFromIconsJsonPath: aPathString [
 	^ self importFromIconsJsonFile: aPathString asFileReference
 ]
 
 { #category : 'private - importing' }
-CFFontAwesomeMetadataImporter class >> importIconNamed: anIconName metadata: iconData categoryMap: categoryMap baseClass: aBaseClass packageName: aPackageName familyName: aFamilyName version: aVersionString selectorsByStyle: selectorsByStyle fontAwesomeMetadata: fontAwesomeMetadata [
-	| styles selector unicode label svgByStyle iconMetadata categories |
+CFFontAwesomeMetadataImporter class >> importIconNamed: anIconName metadata: iconData categoryMap: categoryMap baseClass: aBaseClass packageName: aPackageName familyName: aFamilyName version: aVersionString selectedStyleNames: selectedStyleNames selectedCategoryNames: selectedCategoryNames selectorsByStyle: selectorsByStyle fontAwesomeMetadata: fontAwesomeMetadata [
+	| styles selector unicode label svgByStyle iconMetadata categories importedStyles |
 	styles := iconData at: 'styles' ifAbsent: [ #() ].
 	selector := self selectorForIconName: anIconName.
 	unicode := iconData at: 'unicode' ifAbsent: [ '' ].
 	label := iconData at: 'label' ifAbsent: [ anIconName ].
 	svgByStyle := iconData at: 'svg' ifAbsent: [ Dictionary new ].
 	categories := categoryMap at: anIconName ifAbsent: [ #() ].
+	(self shouldImportCategories: categories selectedCategoryNames: selectedCategoryNames)
+		ifFalse: [ ^ self ].
+	importedStyles := self selectedStylesFrom: styles limitedTo: selectedStyleNames.
+	importedStyles isEmpty ifTrue: [ ^ self ].
 
 	iconMetadata := self
 		newIconMetadataForIconName: anIconName
 		iconData: iconData
 		selector: selector
 		categories: categories
+		importedStyles: importedStyles
 		iconLibraryClass: aBaseClass.
 	fontAwesomeMetadata addIconMetadata: iconMetadata.
 
-	styles do: [ :styleName |
+	importedStyles do: [ :styleName |
 		| styleClass svgData |
 		styleClass := self
 			ensureStyleClassFor: styleName
@@ -304,7 +347,7 @@ CFFontAwesomeMetadataImporter class >> lowerCamelCaseFromDashed: aString [
 ]
 
 { #category : 'private - metadata' }
-CFFontAwesomeMetadataImporter class >> newIconMetadataForIconName: anIconName iconData: iconData selector: aSelector categories: categories iconLibraryClass: anIconLibraryClass [
+CFFontAwesomeMetadataImporter class >> newIconMetadataForIconName: anIconName iconData: iconData selector: aSelector categories: categories importedStyles: importedStyles iconLibraryClass: anIconLibraryClass [
 	| searchData terms label |
 	searchData := iconData at: 'search' ifAbsent: [ Dictionary new ].
 	terms := searchData at: 'terms' ifAbsent: [ #() ].
@@ -315,7 +358,7 @@ CFFontAwesomeMetadataImporter class >> newIconMetadataForIconName: anIconName ic
 		fontAwesomeName: anIconName;
 		label: label;
 		searchTerms: terms;
-		styles: (iconData at: 'styles' ifAbsent: [ #() ]);
+		styles: importedStyles;
 		categories: categories;
 		iconLibraryClass: anIconLibraryClass;
 		yourself
@@ -353,6 +396,20 @@ CFFontAwesomeMetadataImporter class >> normalizedPathsFrom: rawPathData [
 	rawPathData isString ifTrue: [ ^ Array with: rawPathData ].
 	rawPathData isArray ifTrue: [ ^ rawPathData ].
 	self error: 'Unsupported path payload type: ', rawPathData class name
+]
+
+{ #category : 'private - importing' }
+CFFontAwesomeMetadataImporter class >> normalizedSelectedCategoryNames: aCollection [
+	aCollection ifNil: [ ^ nil ].
+	aCollection isEmpty ifTrue: [ ^ #() ].
+	^ aCollection asSet asArray
+]
+
+{ #category : 'private - importing' }
+CFFontAwesomeMetadataImporter class >> normalizedSelectedStyleNames: aCollection [
+	aCollection ifNil: [ ^ nil ].
+	aCollection isEmpty ifTrue: [ ^ #() ].
+	^ aCollection asSet asArray
 ]
 
 { #category : 'private - parsing raw svg' }
@@ -436,6 +493,13 @@ CFFontAwesomeMetadataImporter class >> readMetadataFrom: aFileReference [
 	^ NeoJSONReader fromString: aFileReference contents
 ]
 
+{ #category : 'private - importing' }
+CFFontAwesomeMetadataImporter class >> shouldImportCategories: iconCategories selectedCategoryNames: selectedCategoryNames [
+	selectedCategoryNames ifNil: [ ^ true ].
+	selectedCategoryNames isEmpty ifTrue: [ ^ false ].
+	^ iconCategories anySatisfy: [ :each | selectedCategoryNames includes: each ]
+]
+
 { #category : 'private - versioning' }
 CFFontAwesomeMetadataImporter class >> requiredVersionForIconsJsonFile: aFileReference [
 	^ self inferredVersionForIconsJsonFile: aFileReference
@@ -451,6 +515,36 @@ CFFontAwesomeMetadataImporter class >> reservedSelectorNames [
 CFFontAwesomeMetadataImporter class >> roleForClassName: aString [
 	(aString notNil and: [ aString includesSubstring: 'fa-secondary' ]) ifTrue: [ ^ #secondary ].
 	^ #primary
+]
+
+{ #category : 'private - importing' }
+CFFontAwesomeMetadataImporter class >> selectedStylesFrom: styles limitedTo: selectedStyleNames [
+	selectedStyleNames ifNil: [ ^ styles ].
+	selectedStyleNames isEmpty ifTrue: [ ^ #() ].
+	^ styles select: [ :each | selectedStyleNames includes: each ]
+]
+
+{ #category : 'importing' }
+CFFontAwesomeMetadataImporter class >> importOptionsFromIconsJsonFile: aFileReference [
+	| rawMetadata categoryMap inferredVersion |
+	rawMetadata := self readMetadataFrom: aFileReference.
+	categoryMap := self readCategoryMapFromIconsJsonFile: aFileReference.
+	inferredVersion := self inferredVersionForIconsJsonFile: aFileReference.
+	^ Dictionary new
+		at: #styles put: (self styleNamesFromRawMetadata: rawMetadata);
+		at: #categories put: (self categoryNamesFromCategoryMap: categoryMap);
+		at: #version put: (inferredVersion ifNil: [ '' ]);
+		yourself
+]
+
+{ #category : 'private - importing' }
+CFFontAwesomeMetadataImporter class >> categoryNamesFromCategoryMap: aCategoryMap [
+	| categoryNames |
+	categoryNames := OrderedCollection new.
+	aCategoryMap valuesDo: [ :eachCategories |
+		eachCategories do: [ :eachCategory |
+			(categoryNames includes: eachCategory) ifFalse: [ categoryNames add: eachCategory ] ] ].
+	^ categoryNames asSortedCollection asArray
 ]
 
 { #category : 'private - parsing raw svg' }
@@ -521,6 +615,16 @@ CFFontAwesomeMetadataImporter class >> sourceForIconSelector: aSelector iconName
 			cr;
 			tab; tab; nextPutAll: 'label: ';
 			nextPutAll: aLabelString storeString ]
+]
+
+{ #category : 'private - importing' }
+CFFontAwesomeMetadataImporter class >> styleNamesFromRawMetadata: rawMetadata [
+	| styleNames |
+	styleNames := OrderedCollection new.
+	rawMetadata valuesDo: [ :iconData |
+		(iconData at: 'styles' ifAbsent: [ #() ]) do: [ :eachStyleName |
+			(styleNames includes: eachStyleName) ifFalse: [ styleNames add: eachStyleName ] ] ].
+	^ styleNames asSortedCollection asArray
 ]
 
 { #category : 'private - styles' }

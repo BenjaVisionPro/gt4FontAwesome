@@ -54,8 +54,10 @@ CFFontAwesomeDefaultStyleMenuElement class >> previewSelectorForStyleNamed: aSty
 
 { #category : 'private' }
 CFFontAwesomeDefaultStyleMenuElement class >> shouldShowActionFor: anIconLibraryClass [
-	^ anIconLibraryClass styleName isNil
+	^ anIconLibraryClass hasImportedIcons
+		and: [ anIconLibraryClass styleName isNil
 		and: [ anIconLibraryClass availableStyles size > 1 ]
+		]
 ]
 
 { #category : 'private' }

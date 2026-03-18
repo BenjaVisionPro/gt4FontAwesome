@@ -32,23 +32,33 @@ CFFontAwesomeIcons class >> announceGtIconsFilterChanged [
 ]
 
 { #category : 'announcing' }
+CFFontAwesomeIcons class >> announceMetadataImported [
+	self announcer
+		announce: (CFFontAwesomeMetadataImportedAnnouncement
+				iconLibraryClass: self)
+]
+
+{ #category : 'announcing' }
 CFFontAwesomeIcons class >> announcer [
 	^ DefaultStyleAnnouncer ifNil: [ DefaultStyleAnnouncer := Announcer new ]
 ]
 
 { #category : 'metadata' }
 CFFontAwesomeIcons class >> availableIcons [
+	self hasImportedIcons ifFalse: [ ^ #() ].
 	^ self defaultStyle availableIcons
 ]
 
 { #category : 'metadata' }
 CFFontAwesomeIcons class >> availableIconsForStyleNamed: aStyleName [
+	self hasImportedIcons ifFalse: [ ^ #() ].
 	^ (self styleOrDefaultNamed: aStyleName) availableIcons
 ]
 
 { #category : 'styles' }
 CFFontAwesomeIcons class >> availableStyles [
 	| styleBaseClass |
+	self hasImportedIcons ifTrue: [ ^ self metadata styles ].
 	styleBaseClass := self styleName
 		ifNil: [ self ]
 		ifNotNil: [ self superclass ].
@@ -104,8 +114,30 @@ CFFontAwesomeIcons class >> gtFilterTooltip [
 ]
 
 { #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtImportActionFor: anAction [
+	<gtAction>
+	(CFFontAwesomeImportMenuElement shouldShowActionFor: self)
+		ifFalse: [ ^ anAction noAction ].
+
+	^ anAction dropdown
+		priority: 44;
+		target: GtCoderClassTarget;
+		icon: (CFFontAwesomeImportMenuElement menuActionIconFor: self);
+		label: 'Import Icons';
+		menuItemPreview: self gtImportStatusLabel;
+		menuItemGroup: CFFontAwesomeImportMenuElement menuItemGroup;
+		menuItemPinSubmenu;
+		content: [ :aButton :aTargetElement :anExplicitMenu |
+			CFFontAwesomeImportMenuElement
+				menuContentFor: self
+				button: aButton
+				menuModel: anExplicitMenu ]
+]
+
+{ #category : 'gt extensions' }
 CFFontAwesomeIcons class >> gtIconAssociationsMatching: aString [
 	| availableIconsBySelector activeStyleName |
+	self hasImportedIcons ifFalse: [ ^ #() ].
 	(aString ifNil: [ '' ]) trimBoth isEmpty ifTrue: [ ^ self availableIcons ].
 	availableIconsBySelector := Dictionary new.
 	self availableIcons do: [ :eachAssociation |
@@ -168,10 +200,12 @@ CFFontAwesomeIcons class >> gtIconsFilterQuery: aString [
 CFFontAwesomeIcons class >> gtIconsFor: aView [
 	<gtView>
 	<gtClassView>
+	self hasImportedIcons ifFalse: [ ^ self gtNoImportedIconsFor: aView ].
 	^ aView list
 		title: 'Icons';
 		priority: -10;
 		items: [ self gtIconAssociationsMatching: self gtIconsFilterQuery ];
+		updateWhen: CFFontAwesomeMetadataImportedAnnouncement in: [ self announcer ];
 		updateWhen: CFFontAwesomeDefaultStyleChangedAnnouncement in: [ self announcer ];
 		updateWhen: CFFontAwesomeIconsFilterChangedAnnouncement in: [ self announcer ];
 		itemStencil: [ BlElement new
@@ -203,13 +237,74 @@ CFFontAwesomeIcons class >> gtIconsFor: aView [
 ]
 
 { #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtImportStatusLabel [
+	self hasImportedIcons
+		ifFalse: [ ^ 'Not imported' ].
+	^ self metadata allIconMetadata size asString, ' icons'
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtNoImportedIconsElement [
+	| container title description |
+	container := BrVerticalPane new
+		cellSpacing: 8;
+		padding: (BlInsets all: 16);
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		yourself.
+
+	title := BrLabel new
+		aptitude: BrGlamorousLabelAptitude;
+		text: 'No Font Awesome icons have been imported yet.';
+		yourself.
+
+	description := BrEditor new
+		aptitude: BrGlamorousRegularEditorAptitude + BrGlamorousTextAreaSpacingAptitude;
+		beReadOnlyWithoutSelection;
+		background: Color transparent;
+		border: BlBorder empty;
+		padding: BlInsets empty;
+		margin: BlInsets empty;
+		text: 'Use the class hamburger menu, then choose Font Awesome > Import Icons. Point it to metadata/icons.json from your licensed Font Awesome download, choose the styles you want, and optionally limit the import to selected categories.';
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		yourself.
+
+	container addChildren: { title. description }.
+	^ container
+]
+
+{ #category : 'gt extensions' }
+CFFontAwesomeIcons class >> gtNoImportedIconsFor: aView [
+	^ aView explicit
+		title: 'Icons';
+		priority: -10;
+		updateWhen: CFFontAwesomeMetadataImportedAnnouncement in: [ self announcer ];
+		stencil: [ self gtNoImportedIconsElement ]
+]
+
+{ #category : 'gt extensions' }
 CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 	<gtSearch>
 	| activeStyleName |
+	self hasImportedIcons ifFalse: [
+		^ aSearch list
+			title: 'Font Awesome Icons';
+			priority: 5;
+			items: [ #() ];
+			wantsToDisplayOnEmptyQuery: true;
+			yourself ].
 	activeStyleName := self styleNameOrDefault: self styleName.
 	^ self metadata
 		gtSearchForFontAwesomeIconsFor: aSearch
 		satisfying: [ :each | each supportsStyleNamed: activeStyleName ]
+]
+
+{ #category : 'testing' }
+CFFontAwesomeIcons class >> hasImportedIcons [
+	^ self metadata allIconMetadata notEmpty
 ]
 
 { #category : 'private - gt' }
