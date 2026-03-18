@@ -176,15 +176,15 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference b
 
 { #category : 'importing' }
 CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference baseClass: aBaseClass packageName: aPackageName familyName: aFamilyName version: aVersionString selectedStyleNames: selectedStyleNames selectedCategoryNames: selectedCategoryNames [
-	| rawMetadata selectorsByStyle fontAwesomeMetadata categoryMap |
+	| rawMetadata selectorsByStyle fontAwesomeMetadata categoryMap normalizedSelectedStyleNames normalizedSelectedCategoryNames |
 	rawMetadata := self readMetadataFrom: aFileReference.
 	categoryMap := self readCategoryMapFromIconsJsonFile: aFileReference.
 	selectorsByStyle := Dictionary new.
 	fontAwesomeMetadata := self
 		newMetadataForFamilyName: aFamilyName
 		version: aVersionString.
-	selectedStyleNames := self normalizedSelectedStyleNames: selectedStyleNames.
-	selectedCategoryNames := self normalizedSelectedCategoryNames: selectedCategoryNames.
+	normalizedSelectedStyleNames := self normalizedSelectedStyleNames: selectedStyleNames.
+	normalizedSelectedCategoryNames := self normalizedSelectedCategoryNames: selectedCategoryNames.
 
 	rawMetadata keysAndValuesDo: [ :iconName :iconData |
 		self
@@ -195,8 +195,8 @@ CFFontAwesomeMetadataImporter class >> importFromIconsJsonFile: aFileReference b
 			packageName: aPackageName
 			familyName: aFamilyName
 			version: aVersionString
-			selectedStyleNames: selectedStyleNames
-			selectedCategoryNames: selectedCategoryNames
+			selectedStyleNames: normalizedSelectedStyleNames
+			selectedCategoryNames: normalizedSelectedCategoryNames
 			selectorsByStyle: selectorsByStyle
 			fontAwesomeMetadata: fontAwesomeMetadata ].
 
