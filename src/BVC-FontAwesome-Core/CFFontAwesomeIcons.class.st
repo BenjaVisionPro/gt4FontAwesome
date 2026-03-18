@@ -241,9 +241,13 @@ CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
 		on: Error
 		do: [ ^ self ].
 	firstItem
-		aptitude: BrGlamorousButtonWithIconAptitude;
+		aptitude: BrGlamorousButtonIconAptitude new;
+		background: Color transparent;
+		border: BlBorder empty;
+		padding: BlInsets empty;
 		icon: self spotterHeaderLogoElement;
-		label: ''
+		label: '';
+		action: [ :anElement :aButtonModel :anEvent | ]
 ]
 
 { #category : 'instance creation' }
