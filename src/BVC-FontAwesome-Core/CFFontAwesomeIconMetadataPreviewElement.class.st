@@ -26,13 +26,14 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 
 	previewSection := BrVerticalPane new
 		cellSpacing: 4;
-		fitContent;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
 		yourself.
 
-	samplesContainer := BrFrame new
-		fitContent;
-		yourself.
-	self refreshSamples.
+	samplesContainer := CFFontAwesomeGoldenPreviewElement
+		forMetadata: iconMetadata
+		styleName: currentStyleName.
 
 	styleToggleGroup := self newStyleToggleGroup.
 	styleToggleGroup constraintsDo: [ :c |
@@ -70,7 +71,9 @@ CFFontAwesomeIconMetadataPreviewElement >> initialize [
 	super initialize.
 	self
 		cellSpacing: 4;
-		fitContent;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
 		padding: (BlInsets all: 2)
 ]
 
@@ -145,55 +148,8 @@ CFFontAwesomeIconMetadataPreviewElement >> onStyleActivated: aStyleName [
 	self refreshSamples
 ]
 
-{ #category : 'private - instance creation' }
-CFFontAwesomeIconMetadataPreviewElement >> newPreviewSampleForHeight: aHeight styleName: aStyleName [
-	^ (CFMaFontAwesomeBuilderUtility
-		newFontAwesomeIconForMetadata: iconMetadata
-		styleName: aStyleName
-		fitInto: aHeight @ aHeight)
-			constraintsDo: [ :c | c linear vertical alignBottom ]
-]
-
-{ #category : 'private - instance creation' }
-CFFontAwesomeIconMetadataPreviewElement >> newSamplesForStyleName: aStyleName [
-	| samplesRow rightColumn smallRow mediumSample |
-	samplesRow := BrHorizontalPane new
-		cellSpacing: 4;
-		fitContent;
-		yourself.
-
-	rightColumn := BrVerticalPane new
-		cellSpacing: 4;
-		fitContent;
-		yourself.
-
-	smallRow := BrHorizontalPane new
-		cellSpacing: 4;
-		fitContent;
-		yourself.
-	smallRow addChildren: {
-		(self newPreviewSampleForHeight: 24 styleName: aStyleName).
-		(self newPreviewSampleForHeight: 16 styleName: aStyleName) }.
-	smallRow children do: [ :each |
-		each constraintsDo: [ :c | c linear vertical alignBottom ] ].
-
-	mediumSample := self newPreviewSampleForHeight: 48 styleName: aStyleName.
-	mediumSample constraintsDo: [ :c |
-		c linear horizontal alignCenter ].
-
-	rightColumn addChildren: { smallRow. mediumSample }.
-
-	samplesRow addChildren: {
-		(self newPreviewSampleForHeight: 96 styleName: aStyleName).
-		rightColumn }.
-	(samplesRow children first) constraintsDo: [ :c | c linear vertical alignBottom ].
-	(samplesRow children second) constraintsDo: [ :c | c linear vertical alignBottom ].
-	^ samplesRow
-]
-
 { #category : 'private - updating' }
 CFFontAwesomeIconMetadataPreviewElement >> refreshSamples [
 	samplesContainer ifNil: [ ^ self ].
-	samplesContainer removeChildren.
-	samplesContainer addChild: (self newSamplesForStyleName: currentStyleName)
+	samplesContainer styleName: currentStyleName
 ]
