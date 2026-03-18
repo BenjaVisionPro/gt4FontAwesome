@@ -19,17 +19,27 @@ CFFontAwesomeIconMetadataPreviewElement class >> forMetadata: anIconMetadata [
 
 { #category : 'initialization' }
 CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
-	| styleToggleGroup details |
+	| details previewSection styleToggleGroup |
 	self removeChildren.
 
 	currentStyleName := iconMetadata preferredStyleName.
 
-	styleToggleGroup := self newStyleToggleGroup.
+	previewSection := BrVerticalPane new
+		cellSpacing: 4;
+		fitContent;
+		yourself.
 
 	samplesContainer := BrFrame new
 		fitContent;
 		yourself.
 	self refreshSamples.
+
+	styleToggleGroup := self newStyleToggleGroup.
+	styleToggleGroup constraintsDo: [ :c |
+		c linear horizontal alignCenter ].
+	samplesContainer constraintsDo: [ :c |
+		c linear horizontal alignCenter ].
+	previewSection addChildren: { styleToggleGroup. samplesContainer }.
 
 	details := BrVerticalPane new
 		cellSpacing: 4;
@@ -43,7 +53,7 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 		(self newDetailRowLabel: 'Categories' value: (' , ' join: iconMetadata categories)).
 		(self newDetailRowLabel: 'Search' value: (' , ' join: (iconMetadata searchTerms collect: #asString))) }.
 
-	self addChildren: { styleToggleGroup. samplesContainer. details }
+	self addChildren: { previewSection. details }
 ]
 
 { #category : 'accessing' }
