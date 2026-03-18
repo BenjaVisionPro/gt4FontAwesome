@@ -141,6 +141,8 @@ CFFontAwesomeIcons class >> gtIconsFilterButtonFor: aButton [
 				when: GtSpotterStepSearchQueryChanged
 				do: [ :anAnnouncement |
 					self gtIconsFilterQuery: aSpotter currentStep searchQuery ] ];
+		spotterElementDo: [ :aSpotterElement |
+			self updateSpotterHeaderIn: aSpotterElement ];
 		objectActOn: [ :anActOnEvent :anItem :theButton |
 			self gtIconsFilterQuery: anActOnEvent spotterStep searchQuery.
 			anActOnEvent beActed.
@@ -208,6 +210,40 @@ CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 	^ self metadata
 		gtSearchForFontAwesomeIconsFor: aSearch
 		satisfying: [ :each | each supportsStyleNamed: activeStyleName ]
+]
+
+{ #category : 'private - gt' }
+CFFontAwesomeIcons class >> spotterHeaderLogoElement [
+	^ [ | icon |
+	icon := (CFFontAwesomeIcons style: 'brands') icon: #fontAwesomeLogoFull.
+		(icon asScalableElementSized: (icon extentFittingInto: 140 @ 22))
+			opacity: 0.85;
+			yourself ]
+		on: Error
+		do: [ BrLabel new
+				aptitude: BrLabelAptitude new;
+				text: 'Font Awesome';
+				opacity: 0.6;
+				fitContent;
+				yourself ]
+]
+
+{ #category : 'private - gt' }
+CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
+	| breadcrumb firstItem |
+	breadcrumb := aSpotterElement children
+		ifEmpty: [ ^ self ]
+		ifNotEmpty: [ :children |
+			children first children
+				ifEmpty: [ ^ self ]
+				ifNotEmpty: [ :headerChildren | headerChildren first children first ] ].
+	firstItem := [ breadcrumb itemAt: 1 ]
+		on: Error
+		do: [ ^ self ].
+	firstItem
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		icon: self spotterHeaderLogoElement;
+		label: ''
 ]
 
 { #category : 'instance creation' }

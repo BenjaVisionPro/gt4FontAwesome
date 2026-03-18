@@ -52,8 +52,8 @@ CFFontAwesomeIconMetadataPreviewElement >> buildPreview [
 	details addChildren: {
 		(self newDetailRowLabel: 'Selector' value: iconMetadata selectorSymbol asString).
 		(self newDetailRowLabel: 'FA name' value: (iconMetadata fontAwesomeName ifNil: [ '' ])).
-		(self newDetailRowLabel: 'Categories' value: (' , ' join: iconMetadata categories)).
-		(self newDetailRowLabel: 'Search' value: (' , ' join: (iconMetadata searchTerms collect: #asString))) }.
+		(self newDetailRowLabel: 'Categories' content: (self newWrappingDetailValue: (', ' join: iconMetadata categories))).
+		(self newDetailRowLabel: 'Search' content: (self newWrappingDetailValue: (', ' join: (iconMetadata searchTerms collect: #asString)))) }.
 
 	self addChildren: { previewSection. details }
 ]
@@ -96,7 +96,8 @@ CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel content: aC
 		opacity: 0.6;
 		constraintsDo: [ :c |
 			c horizontal exact: 92.
-			c vertical fitContent ];
+			c vertical fitContent.
+			c linear vertical alignTop ];
 		yourself.
 
 	row addChildren: { keyLabel. aContentElement }.
@@ -114,6 +115,22 @@ CFFontAwesomeIconMetadataPreviewElement >> newDetailRowLabel: aLabel value: aVal
 					c horizontal matchParent.
 					c vertical fitContent ];
 				yourself)
+]
+
+{ #category : 'private - instance creation' }
+CFFontAwesomeIconMetadataPreviewElement >> newWrappingDetailValue: aValue [
+	^ BrEditor new
+		aptitude: BrGlamorousRegularEditorAptitude + BrGlamorousTextAreaSpacingAptitude;
+		beReadOnlyWithoutSelection;
+		background: Color transparent;
+		border: BlBorder empty;
+		padding: BlInsets empty;
+		margin: BlInsets empty;
+		text: aValue;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent.
+			c linear weight: 1 ]
 ]
 
 { #category : 'private - instance creation' }
