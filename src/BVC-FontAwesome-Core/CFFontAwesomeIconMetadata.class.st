@@ -72,19 +72,6 @@ CFFontAwesomeIconMetadata >> gtLiveFor: aView [
 ]
 
 { #category : 'gt extensions' }
-CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValue [
-	^ self
-		gtSpotterPreviewDetailRowLabel: aLabel
-		content: (BrLabel new
-				aptitude: BrGlamorousLabelAptitude;
-				text: aValue;
-				constraintsDo: [ :c |
-					c horizontal matchParent.
-					c vertical fitContent ];
-				yourself)
-]
-
-{ #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel content: aContentElement [
 	| row keyLabel valueLabel |
 	row := BrHorizontalPane new
@@ -110,17 +97,36 @@ CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel content: aCo
 ]
 
 { #category : 'gt extensions' }
+CFFontAwesomeIconMetadata >> gtSpotterPreviewDetailRowLabel: aLabel value: aValue [
+	^ self
+		gtSpotterPreviewDetailRowLabel: aLabel
+		content: (BrLabel new
+				aptitude: BrGlamorousLabelAptitude;
+				text: aValue;
+				constraintsDo: [ :c |
+					c horizontal matchParent.
+					c vertical fitContent ];
+				yourself)
+]
+
+{ #category : 'gt extensions' }
 CFFontAwesomeIconMetadata >> gtSpotterPreviewElement [
 	| currentStyleName root styleToggleGroup samplesContainer details |
 	currentStyleName := self preferredStyleName.
 	root := BrVerticalPane new
 		cellSpacing: 4;
-		fitContent;
 		padding: (BlInsets all: 2);
+		border: (BlBorder paint: Color cyan);
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
 		yourself.
 
 	samplesContainer := BrFrame new
-		fitContent;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent];
+		border: (BlBorder paint: Color green);
 		yourself.
 	samplesContainer addChild: (self gtSpotterPreviewSamplesForStyleName: currentStyleName).
 
