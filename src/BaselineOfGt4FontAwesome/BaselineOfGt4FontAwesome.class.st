@@ -24,6 +24,6 @@ BaselineOfGt4FontAwesome class >> loadLepiter [
 BaselineOfGt4FontAwesome >> baseline: spec [
 	<baseline>
 		^ spec for: #common do: [
-			spec package: 'BVC-FontAwesome-Core'
+			spec package: 'FontAwesome-Core'
 		]
 ]

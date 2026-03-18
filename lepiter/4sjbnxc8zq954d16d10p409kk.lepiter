@@ -103,14 +103,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:32:49.43981+11:00"
+						"dateAndTimeString" : "2026-03-19T09:40:26.594818+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "7jiDaA8RQ2Gk8hl+JlVCyg=="
 				},
-				"code" : "CFFontAwesomeMetadataImporter\r\t\timportFromIconsJsonFile: '/Users/jupiter/Downloads/fontawesome-pro-5.15.4-desktop/metadata/icons.json'\r\t\t\t\tasFileReference\r\t\tpackageName: 'BVC-FontAwesome-Fonts'\r\t\tversion: '5.15.4'"
+				"code" : "FontAwesomeMetadataImporter\r\t\timportFromIconsJsonFile: '/Users/jupiter/Downloads/fontawesome-pro-5.15.4-desktop/metadata/icons.json'\r\t\t\t\tasFileReference\r\t\tpackageName: 'BVC-FontAwesome-Fonts'\r\t\tversion: '5.15.4'"
 			},
 			{
 				"__type" : "textSnippet",
@@ -174,14 +174,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:34:49.977456+11:00"
+						"dateAndTimeString" : "2026-03-19T09:39:15.652422+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "9Yst8WJYQfm6rKYDMP/pqQ=="
 				},
-				"code" : "CFFontAwesomeIcons"
+				"code" : "FontAwesomeIcons"
 			},
 			{
 				"__type" : "textSnippet",
@@ -245,14 +245,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:36:48.286517+11:00"
+						"dateAndTimeString" : "2026-03-19T09:39:15.639829+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "o1QZIptMR5ShupgNCY+wVQ=="
 				},
-				"code" : "CFFontAwesomeIcons regular ampGuitar"
+				"code" : "FontAwesomeIcons regular ampGuitar"
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -279,14 +279,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T14:44:23.137436+11:00"
+						"dateAndTimeString" : "2026-03-19T09:39:15.6513+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "2KejnWdVTpGQyqyMfL6/fg=="
 				},
-				"code" : "(CFFontAwesomeIcons style: 'regular') icon: 'ampGuitar'"
+				"code" : "(FontAwesomeIcons style: 'regular') icon: 'ampGuitar'"
 			},
 			{
 				"__type" : "textSnippet",
@@ -350,14 +350,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:39:53.064803+11:00"
+						"dateAndTimeString" : "2026-03-19T09:39:15.651798+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "K6q0F4QsQw+qSN6FhkFflw=="
 				},
-				"code" : "CFFontAwesomeIcons defaultStyleName: 'duotone'"
+				"code" : "FontAwesomeIcons defaultStyleName: 'duotone'"
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -384,14 +384,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:39:44.044326+11:00"
+						"dateAndTimeString" : "2026-03-19T09:39:15.652134+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "eIE6/WZiQLGA3WcmByHJPQ=="
 				},
-				"code" : "CFFontAwesomeIcons defaultStyle ampGuitar"
+				"code" : "FontAwesomeIcons defaultStyle ampGuitar"
 			},
 			{
 				"__type" : "textSnippet",
@@ -455,14 +455,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-17T12:45:22.547973+11:00"
+						"dateAndTimeString" : "2026-03-19T09:44:03.151522+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "cUV4G1O4T0uSxReH7TQnew=="
 				},
-				"code" : "CFEditableIconExample new"
+				"code" : "FontAwesomeEditableIconExample new"
 			}
 		]
 	},
