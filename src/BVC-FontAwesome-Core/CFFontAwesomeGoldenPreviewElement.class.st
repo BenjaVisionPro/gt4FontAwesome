@@ -165,8 +165,8 @@ CFFontAwesomeGoldenPreviewElement >> layoutForCurrentWidth [
 	lowerBandHeight := topCompositeHeight - topMiddleHeight.
 	mediumWidth := lowerBandHeight.
 	smallColumnWidth := leftCompositeWidth - mediumWidth.
-	smallTopHeight := smallColumnWidth.
-	smallBottomHeight := lowerBandHeight - smallTopHeight.
+	smallBottomHeight := smallColumnWidth.
+	smallTopHeight := lowerBandHeight - smallBottomHeight.
 
 	root constraintsDo: [ :c |
 		c horizontal exact: currentWidth.
