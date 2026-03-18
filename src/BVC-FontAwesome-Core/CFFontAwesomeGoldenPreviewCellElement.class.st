@@ -29,8 +29,7 @@ CFFontAwesomeGoldenPreviewCellElement >> iconMetadata: anIconMetadata [
 	iconMetadata := anIconMetadata.
 	iconElement := nil.
 	self removeChildren.
-	isIconVisible := false.
-	self refreshIcon
+	isIconVisible := false
 ]
 
 { #category : 'initialization' }
@@ -102,6 +101,5 @@ CFFontAwesomeGoldenPreviewCellElement >> styleName: aStyleName [
 	styleName := aStyleName.
 	iconElement := nil.
 	self removeChildren.
-	isIconVisible := false.
-	self refreshIcon
+	isIconVisible := false
 ]

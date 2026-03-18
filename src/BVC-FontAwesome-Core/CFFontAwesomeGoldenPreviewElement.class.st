@@ -127,7 +127,8 @@ CFFontAwesomeGoldenPreviewElement >> iconMetadata [
 { #category : 'accessing' }
 CFFontAwesomeGoldenPreviewElement >> iconMetadata: anIconMetadata [
 	iconMetadata := anIconMetadata.
-	self applyCellMetadataAndStyle
+	self applyCellMetadataAndStyle.
+	lastLaidOutWidth ifNotNil: [ self refreshCells ]
 ]
 
 { #category : 'initialization' }
@@ -219,6 +220,19 @@ CFFontAwesomeGoldenPreviewElement >> previewDebugBorder [
 	^ BlBorder paint: (Color blue alpha: 0.6) width: 0
 ]
 
+{ #category : 'private' }
+CFFontAwesomeGoldenPreviewElement >> refreshCells [
+	{
+		leftCell.
+		topMiddleCell.
+		mediumCell.
+		smallTopCell.
+		smallBottomCell.
+		topRightCell.
+		bottomRightCell }
+		do: [ :each | each refreshIcon ]
+]
+
 { #category : 'accessing' }
 CFFontAwesomeGoldenPreviewElement >> styleName [
 	^ styleName
@@ -227,5 +241,6 @@ CFFontAwesomeGoldenPreviewElement >> styleName [
 { #category : 'accessing' }
 CFFontAwesomeGoldenPreviewElement >> styleName: aStyleName [
 	styleName := aStyleName.
-	self applyCellMetadataAndStyle
+	self applyCellMetadataAndStyle.
+	lastLaidOutWidth ifNotNil: [ self refreshCells ]
 ]
