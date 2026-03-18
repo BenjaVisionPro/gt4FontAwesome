@@ -216,7 +216,7 @@ CFFontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 CFFontAwesomeIcons class >> spotterHeaderLogoElement [
 	^ [ | icon |
 	icon := (CFFontAwesomeIcons style: 'brands') icon: #fontAwesomeLogoFull.
-		(icon asScalableElementSized: (icon extentFittingInto: 140 @ 22))
+		(icon asScalableElementSized: (icon extentFittingInto: 180 @ 28))
 			opacity: 0.85;
 			yourself ]
 		on: Error
@@ -245,6 +245,7 @@ CFFontAwesomeIcons class >> updateSpotterHeaderIn: aSpotterElement [
 		background: Color transparent;
 		border: BlBorder empty;
 		padding: BlInsets empty;
+		constraintsDo: [ :c | c linear vertical alignCenter ];
 		icon: self spotterHeaderLogoElement;
 		label: '';
 		action: [ :anElement :aButtonModel :anEvent | ]
