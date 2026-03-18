@@ -40,7 +40,7 @@ CFFontAwesomeGoldenPreviewCellElement >> initialize [
 	self
 		border: self previewDebugBorder;
 		layout: BlFrameLayout new;
-		padding: (BlInsets all: 0);
+		padding: (BlInsets all: 4);
 		when: BlElementExtentChangedEvent do: [ :anEvent | self refreshIcon ]
 ]
 
