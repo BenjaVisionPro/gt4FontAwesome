@@ -1,6 +1,25 @@
 "
 I am a Bloc element that renders one or more Font Awesome SVG paths directly.
-I am intended to be produced by CFFontAwesomeIcons class-side factory methods and by the metadata importer.
+
+## Responsibilities
+- I represent a concrete Font Awesome icon as a reusable UI element.
+- I manage the SVG path elements and their roles, opacities, colors, and sizing.
+- I provide convenience API for fitting and scaling the icon into a desired extent.
+
+I am typically produced through {{gtClass:FontAwesomeIcons}} class-side factory methods or through imported metadata.
+
+## Example usage
+```smalltalk
+FontAwesomeIcons icon: #addressCard
+```
+
+```smalltalk
+(FontAwesomeIcons icon: #addressCard)
+	size: 32;
+	color: Color black
+```
+
+Use me when you need a real Bloc element that can be embedded directly in another UI.
 "
 Class {
 	#name : 'FontAwesomeIcon',

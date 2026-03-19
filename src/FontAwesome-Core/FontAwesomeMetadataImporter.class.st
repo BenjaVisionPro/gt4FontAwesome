@@ -1,7 +1,23 @@
 "
-I import Font Awesome metadata from metadata/icons.json using NeoJSON.
-I create a style subclass of CFFontAwesomeIcons for each discovered style and compile one class-side method per icon onto the matching style class.
-I use XMLDOMParser to read the raw SVG for duotone role and opacity information.
+I import Font Awesome metadata from `metadata/icons.json` and compile icon library classes and selectors from it.
+
+## Responsibilities
+- I read raw icon metadata and optional category information from Font Awesome distribution files.
+- I normalize styles, SVG paths, roles, opacities, and selector names.
+- I create or update style classes under a chosen base icon library class.
+- I compile class-side icon factory methods and supporting metadata methods.
+- I build {{gtClass:FontAwesomeMetadata}} and {{gtClass:FontAwesomeIconMetadata}} instances for browsing and search.
+
+I am intentionally mostly stateless, so my behavior lives on the class side.
+
+## Example usage
+```smalltalk
+FontAwesomeMetadataImporter
+	importFromIconsJsonFile: aFileReference
+	packageName: 'FontAwesome-Core'
+```
+
+Use me when bootstrapping or refreshing an icon library from Font Awesome source metadata.
 "
 Class {
 	#name : 'FontAwesomeMetadataImporter',

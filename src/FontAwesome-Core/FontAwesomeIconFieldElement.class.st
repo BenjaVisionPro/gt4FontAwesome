@@ -1,3 +1,13 @@
+"
+I am the field element that shows and edits one Font Awesome icon value in a Magritte form.
+
+## Responsibilities
+- I display the currently selected icon or a placeholder when no icon is selected.
+- I open the dropdown content used to choose another icon.
+- I synchronize my visual state with a field view model.
+
+I provide the compact in-form representation, while {{gtClass:FontAwesomeIconSelectorElement}} provides the richer selection UI.
+"
 Class {
 	#name : 'FontAwesomeIconFieldElement',
 	#superclass : 'BrFrame',

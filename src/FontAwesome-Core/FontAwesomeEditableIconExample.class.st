@@ -1,3 +1,14 @@
+"
+I am a small Magritte example model that demonstrates editing a Font Awesome icon selection.
+
+## Responsibilities
+- I provide a simple object with an icon-valued slot.
+- I define a {{gtClass:FontAwesomeIconDescription}} for that slot.
+- I act as a lightweight usage example for the Font Awesome/Magritte integration.
+
+## Example usage
+Inspect an instance of me and explore the Magritte form generated from my icon description.
+"
 Class {
 	#name : 'FontAwesomeEditableIconExample',
 	#superclass : 'Object',

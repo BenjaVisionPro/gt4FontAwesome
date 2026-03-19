@@ -1,3 +1,13 @@
+"
+I announce that the default style changed for a given icon library.
+
+## Responsibilities
+- I carry the icon library class whose default style changed.
+- I carry the selected style name.
+- I let interested widgets refresh their previews and lists.
+
+Use me to broadcast style changes without coupling publishers and subscribers directly.
+"
 Class {
 	#name : 'FontAwesomeDefaultStyleChangedAnnouncement',
 	#superclass : 'Announcement',

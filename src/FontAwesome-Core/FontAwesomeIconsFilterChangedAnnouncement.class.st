@@ -1,3 +1,14 @@
+"
+I announce that the icon filter query changed for a given icon library.
+
+## Responsibilities
+- I carry the icon library class for which the filter changed.
+- I carry the new query text.
+- I let interested UI elements refresh themselves without being tightly coupled to the sender.
+
+## Example usage
+A publisher can announce me after changing the current filter text, and subscribers can use my payload to refresh their visible icon lists.
+"
 Class {
 	#name : 'FontAwesomeIconsFilterChangedAnnouncement',
 	#superclass : 'Announcement',

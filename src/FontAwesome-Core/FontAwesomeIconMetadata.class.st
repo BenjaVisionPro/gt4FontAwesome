@@ -1,3 +1,25 @@
+"
+I represent searchable metadata for one Font Awesome icon.
+
+## Responsibilities
+- I keep the selector name, Font Awesome name, label, categories, styles, and search terms for one icon.
+- I answer whether I match a search query.
+- I provide inspector views and preview elements that make the icon explorable.
+- I link metadata back to the icon library class that can build the real icon element.
+
+I do not render the icon myself. Instead, I describe how to find and present it.
+
+## Example usage
+```smalltalk
+someMetadata matchesSearchText: 'address card'
+```
+
+```smalltalk
+someMetadata asSpotterPreviewElement
+```
+
+Use me as the domain object for search, inspection, and selection workflows.
+"
 Class {
 	#name : 'FontAwesomeIconMetadata',
 	#superclass : 'Object',

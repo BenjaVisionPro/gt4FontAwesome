@@ -1,3 +1,22 @@
+"
+I am a preview element used to present one icon metadata entry in a Spotlight/Spotter-style layout.
+
+## Responsibilities
+- I compose multiple preview cells that show the same icon at different sizes and placements.
+- I react to layout changes and adapt the preview composition to the available width.
+- I provide a richer, visual narrative for one {{gtClass:FontAwesomeIconMetadata}} and one style.
+
+I am usually created through {{gtMethod:FontAwesomeSpotterPreviewElement class>>#forMetadata:styleName:}} or indirectly from metadata preview tools.
+
+## Example usage
+```smalltalk
+FontAwesomeSpotterPreviewElement
+	forMetadata: someMetadata
+	styleName: someMetadata preferredStyleName
+```
+
+Use me when you want to inspect how one icon behaves in a larger visual preview.
+"
 Class {
 	#name : 'FontAwesomeSpotterPreviewElement',
 	#superclass : 'BrVerticalPane',

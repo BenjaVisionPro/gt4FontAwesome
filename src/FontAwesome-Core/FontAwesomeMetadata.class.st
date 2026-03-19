@@ -1,3 +1,19 @@
+"
+I represent the imported metadata of a Font Awesome icon family.
+
+## Responsibilities
+- I keep family-level information such as family name, version, and available styles.
+- I manage the collection of {{gtClass:FontAwesomeIconMetadata}} instances indexed by selector.
+- I provide search operations over the imported icon metadata.
+- I integrate with GT search so icon libraries can expose searchable icon results.
+
+## Example usage
+```smalltalk
+someMetadata searchIconsMatching: 'address card'
+```
+
+Use me as the searchable catalog behind an icon library.
+"
 Class {
 	#name : 'FontAwesomeMetadata',
 	#superclass : 'Object',

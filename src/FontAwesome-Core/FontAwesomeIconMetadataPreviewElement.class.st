@@ -1,3 +1,13 @@
+"
+I am a preview element that presents the details and style variants of one icon metadata entry.
+
+## Responsibilities
+- I show a richer preview section for one icon.
+- I let the user switch between available styles.
+- I present key metadata such as selector, Font Awesome name, categories, and search terms.
+
+I am commonly used as the spotter-style preview produced from {{gtClass:FontAwesomeIconMetadata}}.
+"
 Class {
 	#name : 'FontAwesomeIconMetadataPreviewElement',
 	#superclass : 'BrVerticalPane',

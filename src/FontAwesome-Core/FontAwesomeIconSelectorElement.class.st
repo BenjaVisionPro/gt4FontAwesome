@@ -1,3 +1,17 @@
+"
+I am a dropdown-based icon selector element for Magritte-driven editing.
+
+## Responsibilities
+- I present searchable icon metadata in a grid or list-like visual selection UI.
+- I let a user filter icons, preview them, and choose one.
+- I synchronize the chosen icon selector with a field view model and its memento.
+- I adapt my layout to the available space and current preview size.
+
+I collaborate closely with {{gtClass:FontAwesomeIconDescription}} and the surrounding Magritte builder infrastructure.
+
+## Example usage
+I am usually created indirectly by the Magritte element builder when it encounters a {{gtClass:FontAwesomeIconDescription}}.
+"
 Class {
 	#name : 'FontAwesomeIconSelectorElement',
 	#superclass : 'BlElement',

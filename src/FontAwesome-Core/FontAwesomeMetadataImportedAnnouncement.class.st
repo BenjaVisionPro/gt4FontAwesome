@@ -1,3 +1,12 @@
+"
+I announce that metadata was imported for an icon library class.
+
+## Responsibilities
+- I carry the icon library class whose metadata changed.
+- I provide a synchronization point for browsers and tools that should refresh after an import.
+
+Use me to decouple import operations from the widgets that visualize imported icons.
+"
 Class {
 	#name : 'FontAwesomeMetadataImportedAnnouncement',
 	#superclass : 'Announcement',

@@ -1,6 +1,25 @@
 "
 I am the common base class for generated Font Awesome icon factory classes.
-Each discovered Font Awesome style is represented by a subclass created on demand by CFFontAwesomeMetadataImporter.
+
+## Responsibilities
+- I serve as the facade through which clients ask for icons.
+- I manage imported metadata and the list of available styles.
+- I manage the current default style.
+- I expose GT views, Spotter integrations, and actions for browsing and importing icons.
+- I announce important state changes such as metadata imports and default style updates.
+
+Subclasses can be generated per imported style, while I provide the common API and tooling integration.
+
+## Example usage
+```smalltalk
+FontAwesomeIcons icon: #addressCard
+```
+
+```smalltalk
+FontAwesomeIcons icon: #addressCard styleName: 'light'
+```
+
+Use me as the main entry point to a Font Awesome icon library in the image.
 "
 Class {
 	#name : 'FontAwesomeIcons',

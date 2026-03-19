@@ -1,3 +1,15 @@
+"
+I am a menu element that guides the user through importing Font Awesome metadata from disk.
+
+## Responsibilities
+- I collect import parameters such as metadata file, package name, family name, version, styles, and categories.
+- I load import options from the selected metadata file.
+- I trigger the actual import through {{gtClass:FontAwesomeMetadataImporter}}.
+- I present progress and error status to the user.
+
+## Example usage
+I am typically opened from a GT action associated with {{gtClass:FontAwesomeIcons}} rather than instantiated manually.
+"
 Class {
 	#name : 'FontAwesomeImportMenuElement',
 	#superclass : 'BrVerticalPane',

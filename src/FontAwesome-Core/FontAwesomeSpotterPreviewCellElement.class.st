@@ -1,3 +1,13 @@
+"
+I am a small preview cell that renders one icon metadata entry in one chosen style.
+
+## Responsibilities
+- I manage one icon preview element and keep it fitted into my available extent.
+- I hide the icon when the available extent is too small.
+- I support larger composed previews such as {{gtClass:FontAwesomeSpotterPreviewElement}}.
+
+I focus on one rendering cell, while other preview elements compose several cells together.
+"
 Class {
 	#name : 'FontAwesomeSpotterPreviewCellElement',
 	#superclass : 'BrFrame',

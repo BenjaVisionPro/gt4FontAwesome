@@ -1,3 +1,21 @@
+"
+I am a vertical UI element that displays the icons of one icon library together with filtering controls.
+
+## Responsibilities
+- I present the available icons of an icon library.
+- I manage the current search text and refresh the visible list accordingly.
+- I react to lifecycle events so I can subscribe and unsubscribe from announcements.
+- I offer a lightweight browser for inspecting and refreshing imported icons.
+
+## Example usage
+```smalltalk
+FontAwesomeIconsViewElement new
+	iconLibraryClass: FontAwesomeIcons;
+	yourself
+```
+
+Use me when you want an embeddable browser for an imported icon library.
+"
 Class {
 	#name : 'FontAwesomeIconsViewElement',
 	#superclass : 'BrVerticalPane',

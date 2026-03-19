@@ -1,3 +1,13 @@
+"
+I am a small utility class that builds ready-to-use Font Awesome UI elements.
+
+## Responsibilities
+- I create icon elements from icon values or metadata.
+- I create convenience affordances related to icon selection.
+- I keep common UI construction logic out of higher-level widgets.
+
+Use me when several widgets need the same icon-building behavior and you want that construction centralized.
+"
 Class {
 	#name : 'FontAwesomeBuilderUtility',
 	#superclass : 'Object',

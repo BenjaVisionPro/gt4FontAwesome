@@ -1,3 +1,13 @@
+"
+I am a context-menu content element that lets the user choose the default style for an icon library.
+
+## Responsibilities
+- I list the available imported styles of an icon library.
+- I present a preview and label for each style choice.
+- I update the selected default style through the icon library API.
+
+I am typically opened from a GT action associated with {{gtClass:FontAwesomeIcons}}.
+"
 Class {
 	#name : 'FontAwesomeDefaultStyleMenuElement',
 	#superclass : 'GtAbstractCoderContextMenuContent',

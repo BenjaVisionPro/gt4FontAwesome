@@ -1,3 +1,24 @@
+"
+I am a Magritte description specialized for choosing and rendering Font Awesome icons.
+
+## Responsibilities
+- I describe a field whose value is a Font Awesome selector symbol.
+- I know which icon library class and style should be used to obtain available icons.
+- I provide sizing-related properties used by custom stencil builders.
+- I support Magritte visitors so UI builders can render me as an icon selector.
+
+## Example usage
+```smalltalk
+FontAwesomeIconDescription new
+	accessor: #icon;
+	label: 'Icon';
+	iconLibraryClass: FontAwesomeIcons;
+	styleName: 'light';
+	yourself
+```
+
+I am typically embedded in a Magritte-described object rather than used on my own.
+"
 Class {
 	#name : 'FontAwesomeIconDescription',
 	#superclass : 'GtMagritteIconDescription',
