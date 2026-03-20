@@ -113,6 +113,40 @@
 				"code" : "FontAwesomeMetadataImporter\r\t\timportFromIconsJsonFile: '/Users/jupiter/Downloads/fontawesome-pro-5.15.4-desktop/metadata/icons.json'\r\t\t\t\tasFileReference\r\t\tpackageName: 'BVC-FontAwesome-Fonts'\r\t\tversion: '5.15.4'"
 			},
 			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-03-19T13:03:45.945128+11:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-03-19T13:05:20.613006+11:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "e15V1Aq9SzKy/VxQPj7t8Q=="
+				},
+				"code" : "FontAwesomeImporter new"
+			},
+			{
 				"__type" : "textSnippet",
 				"children" : {
 					"__type" : "snippets",
@@ -455,14 +489,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-03-19T09:36:29.718174+11:00"
+						"dateAndTimeString" : "2026-03-19T09:44:03.151522+11:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "cUV4G1O4T0uSxReH7TQnew=="
 				},
-				"code" : "EditableIconExample new"
+				"code" : "FontAwesomeEditableIconExample new"
 			}
 		]
 	},
