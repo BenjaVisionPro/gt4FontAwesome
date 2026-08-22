@@ -23,7 +23,7 @@ Class {
 FontAwesomeDefaultStyleMenuElement class >> menuActionIconFor: anIconLibraryClass [
 	^ [
 		| icon |
-		icon := (anIconLibraryClass style: 'brands') icon: #fontAwesomeFlag.
+		icon := (anIconLibraryClass style: 'brands') icon: #fontAwesome.
 		BlElement new
 			size: 16 @ 16;
 			layout: BlFrameLayout new;

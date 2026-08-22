@@ -26,6 +26,15 @@ Class {
 	#package : 'FontAwesome-Core'
 }
 
+{ #category : 'private - categories' }
+FontAwesomeMetadataImporter class >> addCategoryLabel: aLabel iconNames: iconNames to: categoryMap [
+	aLabel ifNil: [ ^ self ].
+	iconNames do: [ :iconName |
+		| categories |
+		categories := categoryMap at: iconName ifAbsentPut: [ OrderedCollection new ].
+		(categories includes: aLabel) ifFalse: [ categories add: aLabel ] ]
+]
+
 { #category : 'private - metadata' }
 FontAwesomeMetadataImporter class >> aliasSelectorsFromIconData: iconData excluding: canonicalSelector [
 	| aliasData aliasNames |
@@ -456,19 +465,19 @@ FontAwesomeMetadataImporter class >> normalizedSelectedStyleNames: aCollection [
 ]
 
 { #category : 'private - parsing raw svg' }
+FontAwesomeMetadataImporter class >> opacityForClassName: aString secondaryOpacity: aNumber [
+	(aString notNil and: [ aString includesSubstring: 'fa-secondary' ])
+		ifTrue: [ ^ aNumber ].
+	^ 1.0
+]
+
+{ #category : 'private - parsing raw svg' }
 FontAwesomeMetadataImporter class >> opacityFromPathElement: anElement ifAbsent: absentBlock [
 	| opacityString |
 	anElement ifNil: [ ^ absentBlock value ].
 	opacityString := anElement attributeAt: 'opacity' ifAbsent: [ ^ absentBlock value ].
 	(opacityString beginsWith: '.') ifTrue: [ opacityString := '0', opacityString ].
 	^ [ opacityString asNumber asFloat ] on: Error do: [ absentBlock value ]
-]
-
-{ #category : 'private - parsing raw svg' }
-FontAwesomeMetadataImporter class >> opacityForClassName: aString secondaryOpacity: aNumber [
-	(aString notNil and: [ aString includesSubstring: 'fa-secondary' ])
-		ifTrue: [ ^ aNumber ].
-	^ 1.0
 ]
 
 { #category : 'private - parsing raw svg' }
@@ -503,15 +512,6 @@ FontAwesomeMetadataImporter class >> readCategoryMapFromIconsJsonFile: aFileRefe
 	(categoriesFile exists and: [ categoriesFile isFile ])
 		ifFalse: [ ^ Dictionary new ].
 	^ self readCategoryMapFromYamlFile: categoriesFile
-]
-
-{ #category : 'private - categories' }
-FontAwesomeMetadataImporter class >> addCategoryLabel: aLabel iconNames: iconNames to: categoryMap [
-	aLabel ifNil: [ ^ self ].
-	iconNames do: [ :iconName |
-		| categories |
-		categories := categoryMap at: iconName ifAbsentPut: [ OrderedCollection new ].
-		(categories includes: aLabel) ifFalse: [ categories add: aLabel ] ]
 ]
 
 { #category : 'private - categories' }
