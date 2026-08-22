@@ -134,23 +134,15 @@ FontAwesomeIcons class >> gtFilterTooltip [
 
 { #category : 'gt extensions' }
 FontAwesomeIcons class >> gtIconAssociationsMatching: aString [
-	| availableIconsBySelector activeStyleName |
+	| activeStyleName metadataItems |
 	self hasImportedIcons ifFalse: [ ^ #() ].
-	(aString ifNil: [ '' ]) trimBoth isEmpty ifTrue: [ ^ self availableIcons ].
-	availableIconsBySelector := Dictionary new.
-	self availableIcons do: [ :eachAssociation |
-		availableIconsBySelector
-			at: eachAssociation key
-			put: eachAssociation ].
-	activeStyleName := self styleNameOrDefault: self styleName.
-	^ ((self metadata
+	activeStyleName := self styleName.
+	metadataItems := self metadata
 		searchIconsMatching: aString
-		satisfying: [ :each | each supportsStyleNamed: activeStyleName ])
-		collect: [ :each |
-			availableIconsBySelector
-				at: each selectorSymbol
-				ifAbsent: [ nil ] ])
-		reject: [ :each | each isNil ]
+		satisfying: [ :each |
+			activeStyleName isNil or: [ each supportsStyleNamed: activeStyleName ] ].
+	^ metadataItems collect: [ :each |
+		each selectorSymbol -> (self icon: each selectorSymbol) ]
 ]
 
 { #category : 'gt extensions' }
@@ -315,10 +307,11 @@ FontAwesomeIcons class >> gtSpotterForVectorIconFor: aSearch [
 			items: [ #() ];
 			wantsToDisplayOnEmptyQuery: true;
 			yourself ].
-	activeStyleName := self styleNameOrDefault: self styleName.
+	activeStyleName := self styleName.
 	^ self metadata
 		gtSearchForFontAwesomeIconsFor: aSearch
-		satisfying: [ :each | each supportsStyleNamed: activeStyleName ]
+		satisfying: [ :each |
+			activeStyleName isNil or: [ each supportsStyleNamed: activeStyleName ] ]
 ]
 
 { #category : 'testing' }
@@ -328,8 +321,12 @@ FontAwesomeIcons class >> hasImportedIcons [
 
 { #category : 'instance creation' }
 FontAwesomeIcons class >> icon: aSelectorSymbol [
-	self styleName ifNil: [ ^ self defaultStyle perform: aSelectorSymbol asSymbol ].
-	^ self perform: aSelectorSymbol asSymbol
+	| metadataEntry |
+	self styleName ifNotNil: [ ^ self perform: aSelectorSymbol asSymbol ].
+	metadataEntry := self metadata iconMetadataAt: aSelectorSymbol asSymbol.
+	metadataEntry ifNil: [ ^ self defaultStyle perform: aSelectorSymbol asSymbol ].
+	^ (self style: metadataEntry preferredStyleName)
+		perform: metadataEntry selectorSymbol
 ]
 
 { #category : 'instance creation' }
@@ -366,7 +363,14 @@ FontAwesomeIcons class >> icon: aSelectorSymbol size: aSize color: aColor [
 
 { #category : 'instance creation' }
 FontAwesomeIcons class >> icon: aSelectorSymbol styleName: aStyleName [
-	^ (self styleOrDefaultNamed: aStyleName) icon: aSelectorSymbol
+	| metadataEntry styleClass |
+	aStyleName ifNil: [ ^ self icon: aSelectorSymbol ].
+	styleClass := self style: aStyleName.
+	metadataEntry := self metadata iconMetadataAt: aSelectorSymbol asSymbol.
+	metadataEntry ifNil: [ ^ styleClass icon: aSelectorSymbol ].
+	(metadataEntry supportsStyleNamed: aStyleName) ifFalse: [
+		self error: metadataEntry selectorSymbol asString, ' is not available in Font Awesome style ', aStyleName printString ].
+	^ styleClass icon: metadataEntry selectorSymbol
 ]
 
 { #category : 'instance creation' }
@@ -387,17 +391,6 @@ FontAwesomeIcons class >> iconNamed: aSelector styleKey: aStyleKey width: aWidth
 		label: aLabelString
 		viewBox: (0 @ 0 extent: aWidth @ aHeight)
 		pathSpecs: pathSpecs
-]
-
-{ #category : 'styles' }
-FontAwesomeIcons class >> loadFromDisc [
-	"Point this to your licensed download of the font awesome metadata"
-
-	FontAwesomeMetadataImporter
-		importFromIconsJsonFile: '/Users/jupiter/Downloads/fontawesome-pro-5.15.4-desktop/metadata/icons.json'
-				asFileReference
-		packageName: 'BVC-FontAwesome-Fonts'
-		version: '5.15.4'
 ]
 
 { #category : 'metadata' }

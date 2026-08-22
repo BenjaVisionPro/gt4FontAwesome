@@ -21,7 +21,8 @@ Class {
 		'familyName',
 		'version',
 		'styles',
-		'iconsBySelector'
+		'iconsBySelector',
+		'iconsByAliasSelector'
 	],
 	#category : 'FontAwesome-Core',
 	#package : 'FontAwesome-Core'
@@ -29,7 +30,9 @@ Class {
 
 { #category : 'adding' }
 FontAwesomeMetadata >> addIconMetadata: anIconMetadata [
-	iconsBySelector at: anIconMetadata selectorSymbol put: anIconMetadata
+	iconsBySelector at: anIconMetadata selectorSymbol put: anIconMetadata.
+	anIconMetadata aliases do: [ :eachAlias |
+		iconsByAliasSelector at: eachAlias put: anIconMetadata ]
 ]
 
 { #category : 'accessing' }
@@ -80,7 +83,9 @@ FontAwesomeMetadata >> gtSearchForFontAwesomeIconsFor: aSearch satisfying: aBloc
 
 { #category : 'accessing' }
 FontAwesomeMetadata >> iconMetadataAt: aSelectorSymbol [
-	^ iconsBySelector at: aSelectorSymbol ifAbsent: [ nil ]
+	^ iconsBySelector
+		at: aSelectorSymbol asSymbol
+		ifAbsent: [ iconsByAliasSelector at: aSelectorSymbol asSymbol ifAbsent: [ nil ] ]
 ]
 
 { #category : 'accessing' }
@@ -92,7 +97,8 @@ FontAwesomeMetadata >> iconsBySelector [
 FontAwesomeMetadata >> initialize [
 	super initialize.
 	styles := #().
-	iconsBySelector := Dictionary new
+	iconsBySelector := Dictionary new.
+	iconsByAliasSelector := Dictionary new
 ]
 
 { #category : 'searching' }

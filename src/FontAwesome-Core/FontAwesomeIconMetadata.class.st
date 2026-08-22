@@ -30,11 +30,23 @@ Class {
 		'searchTerms',
 		'styles',
 		'categories',
+		'aliases',
 		'iconLibraryClass'
 	],
 	#category : 'FontAwesome-Core',
 	#package : 'FontAwesome-Core'
 }
+
+
+{ #category : 'accessing' }
+FontAwesomeIconMetadata >> aliases [
+	^ aliases
+]
+
+{ #category : 'accessing' }
+FontAwesomeIconMetadata >> aliases: aCollection [
+	aliases := aCollection asArray
+]
 
 { #category : 'accessing' }
 FontAwesomeIconMetadata >> asSpotterPreviewElement [
@@ -71,6 +83,7 @@ FontAwesomeIconMetadata >> gtDetailsFor: aView [
 			{'Selector'. self selectorSymbol asString}.
 			{'Font Awesome Name'. self fontAwesomeName ifNil: [ '' ]}.
 			{'Title'. self label ifNil: [ '' ]}.
+			{'Aliases'. ' , ' join: (self aliases collect: #asString)}.
 			{'Styles'. ' , ' join: self styles}.
 			{'Categories'. ' , ' join: self categories} } ];
 		column: 'Field' text: [ :each | each first ];
@@ -113,7 +126,8 @@ FontAwesomeIconMetadata >> initialize [
 	super initialize.
 	searchTerms := #().
 	styles := #().
-	categories := #()
+	categories := #().
+	aliases := #()
 ]
 
 { #category : 'accessing' }
@@ -163,6 +177,8 @@ FontAwesomeIconMetadata >> scoreForSearchTerms: aCollection [
 			or: [ (name includesSubstring: term)
 				or: [ title includesSubstring: term ] ])
 			ifTrue: [ score := score + 50 ].
+		(self aliases anySatisfy: [ :each | each asString asLowercase includesSubstring: term ])
+			ifTrue: [ score := score + 40 ].
 		(self searchTerms anySatisfy: [ :each | each asString asLowercase includesSubstring: term ])
 			ifTrue: [ score := score + 20 ].
 		(self categories anySatisfy: [ :each | each asString asLowercase includesSubstring: term ])
@@ -185,6 +201,7 @@ FontAwesomeIconMetadata >> searchableStrings [
 	^ ({ self selectorSymbol asString.
 		self fontAwesomeName ifNil: [ '' ].
 		self label ifNil: [ '' ] }
+		, self aliases
 		, self searchTerms
 		, self categories)
 		collect: [ :each | each asString ]

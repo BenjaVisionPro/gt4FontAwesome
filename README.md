@@ -7,14 +7,10 @@ To install icons, point the importer at the `icons.json` file inside your downlo
 ### Example import
 
 ```smalltalk
-CFFontAwesomeIcons >> loadFromDisc
-	"Point this to your licensed download of the font awesome metadata"
-
-	CFFontAwesomeMetadataImporter
-		importFromIconsJsonFile: '/Users/jupiter/Downloads/fontawesome-pro-5.15.4-desktop/metadata/icons.json'
-				asFileReference
-		packageName: 'BVC-FontAwesome'
-		version: '5.15.4'
+FontAwesomeMetadataImporter
+	importFromIconsJsonFile: '/path/to/fontawesome/metadata/icons.json' asFileReference
+	packageName: 'My-FontAwesome-Icons'
+	version: '7.0.0'
 ```
 
 ### Installation

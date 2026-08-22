@@ -26,6 +26,15 @@ Class {
 	#package : 'FontAwesome-Core'
 }
 
+{ #category : 'private - metadata' }
+FontAwesomeMetadataImporter class >> aliasSelectorsFromIconData: iconData excluding: canonicalSelector [
+	| aliasData aliasNames |
+	aliasData := iconData at: 'aliases' ifAbsent: [ Dictionary new ].
+	aliasNames := aliasData at: 'names' ifAbsent: [ #() ].
+	^ ((aliasNames collect: [ :each | self selectorForIconName: each ])
+		reject: [ :each | each = canonicalSelector ]) asSet asArray
+]
+
 { #category : 'private - name conversion' }
 FontAwesomeMetadataImporter class >> camelCaseFromDashed: aString [
 	| parts |
@@ -363,17 +372,6 @@ FontAwesomeMetadataImporter class >> isSemanticVersionString: aString [
 	^ parts allSatisfy: [ :each | each notEmpty and: [ each allSatisfy: #isDigit ] ]
 ]
 
-{ #category : 'importing' }
-FontAwesomeMetadataImporter class >> loadFromDisc [
-	^ self
-		importFromIconsJsonFile: '/Users/jupiter/Downloads/fontawesome-pro-5.15.4-desktop/metadata/icons.json'
-				asFileReference
-		baseClass: FontAwesomeIcons
-		packageName: 'BVC-FontAwesome'
-		familyName: 'Font Awesome Pro'
-		version: '5.15.4'
-]
-
 { #category : 'private - name conversion' }
 FontAwesomeMetadataImporter class >> lowerCamelCaseFromDashed: aString [
 	| parts |
@@ -396,6 +394,7 @@ FontAwesomeMetadataImporter class >> newIconMetadataForIconName: anIconName icon
 		selectorSymbol: aSelector;
 		fontAwesomeName: anIconName;
 		label: label;
+		aliases: (self aliasSelectorsFromIconData: iconData excluding: aSelector);
 		searchTerms: terms;
 		styles: importedStyles;
 		categories: categories;
@@ -420,13 +419,18 @@ FontAwesomeMetadataImporter class >> normalizePathSpecsFromSvgData: svgData [
 	secondaryOpacity := self secondaryOpacityFromRawSvg: rawSvg.
 
 	^ (1 to: paths size) collect: [ :index |
-		| pathElement className |
+		| pathElement className opacity role |
 		pathElement := pathElements at: index ifAbsent: [ nil ].
 		className := self pathClassNameFromElement: pathElement.
+		opacity := self opacityFromPathElement: pathElement ifAbsent: [
+			self opacityForClassName: className secondaryOpacity: secondaryOpacity ].
+		role := (className notNil and: [ className includesSubstring: 'fa-secondary' ])
+			ifTrue: [ #secondary ]
+			ifFalse: [ opacity < 1.0 ifTrue: [ #secondary ] ifFalse: [ #primary ] ].
 		Dictionary new
 			at: #path put: (paths at: index);
-			at: #role put: (self roleForClassName: className);
-			at: #opacity put: (self opacityForClassName: className secondaryOpacity: secondaryOpacity);
+			at: #role put: role;
+			at: #opacity put: opacity;
 			yourself ]
 ]
 
@@ -449,6 +453,15 @@ FontAwesomeMetadataImporter class >> normalizedSelectedStyleNames: aCollection [
 	aCollection ifNil: [ ^ nil ].
 	aCollection isEmpty ifTrue: [ ^ #() ].
 	^ aCollection asSet asArray
+]
+
+{ #category : 'private - parsing raw svg' }
+FontAwesomeMetadataImporter class >> opacityFromPathElement: anElement ifAbsent: absentBlock [
+	| opacityString |
+	anElement ifNil: [ ^ absentBlock value ].
+	opacityString := anElement attributeAt: 'opacity' ifAbsent: [ ^ absentBlock value ].
+	(opacityString beginsWith: '.') ifTrue: [ opacityString := '0', opacityString ].
+	^ [ opacityString asNumber asFloat ] on: Error do: [ absentBlock value ]
 ]
 
 { #category : 'private - parsing raw svg' }
@@ -493,37 +506,55 @@ FontAwesomeMetadataImporter class >> readCategoryMapFromIconsJsonFile: aFileRefe
 ]
 
 { #category : 'private - categories' }
+FontAwesomeMetadataImporter class >> addCategoryLabel: aLabel iconNames: iconNames to: categoryMap [
+	aLabel ifNil: [ ^ self ].
+	iconNames do: [ :iconName |
+		| categories |
+		categories := categoryMap at: iconName ifAbsentPut: [ OrderedCollection new ].
+		(categories includes: aLabel) ifFalse: [ categories add: aLabel ] ]
+]
+
+{ #category : 'private - categories' }
 FontAwesomeMetadataImporter class >> readCategoryMapFromYamlFile: aFileReference [
-	| categoryMap lines currentCategoryKey currentCategoryLabel insideIcons |
+	| categoryMap currentCategoryKey currentCategoryLabel currentIconNames insideIcons |
 	categoryMap := Dictionary new.
-	lines := aFileReference contents lines.
 	currentCategoryKey := nil.
 	currentCategoryLabel := nil.
+	currentIconNames := OrderedCollection new.
 	insideIcons := false.
 
-	lines do: [ :rawLine |
-		| line trimmed indent iconName categories |
+	aFileReference contents lines do: [ :rawLine |
+		| line trimmed indent |
 		line := rawLine copyUpTo: $#.
 		trimmed := line trimBoth.
-		trimmed isEmpty ifTrue: [
-			insideIcons := false ] ifFalse: [
+		trimmed isEmpty ifFalse: [
 			indent := line size - line trimLeft size.
-			(indent = 0 and: [ trimmed last = $: ]) ifTrue: [
-				currentCategoryKey := trimmed allButLast.
-				currentCategoryLabel := currentCategoryKey.
-				insideIcons := false ] ifFalse: [
-				(indent = 2 and: [ trimmed beginsWith: 'label:' ]) ifTrue: [
-					currentCategoryLabel := self yamlScalarValueFrom: (trimmed allButFirst: 'label:' size) ] ifFalse: [
-					(indent = 2 and: [ trimmed = 'icons:' ]) ifTrue: [
-						insideIcons := true ] ifFalse: [
-						(insideIcons and: [ indent >= 4 and: [ trimmed beginsWith: '- ' ] ]) ifTrue: [
-							iconName := self yamlScalarValueFrom: (trimmed allButFirst: 2).
-							categories := categoryMap at: iconName ifAbsentPut: [ OrderedCollection new ].
-							(categories includes: currentCategoryLabel) ifFalse: [
-								categories add: currentCategoryLabel ] ] ] ] ] ] ].
+			(indent = 0 and: [ trimmed last = $: ])
+				ifTrue: [
+					self
+						addCategoryLabel: (currentCategoryLabel ifNil: [ currentCategoryKey ])
+						iconNames: currentIconNames
+						to: categoryMap.
+					currentCategoryKey := trimmed allButLast.
+					currentCategoryLabel := nil.
+					currentIconNames := OrderedCollection new.
+					insideIcons := false ]
+				ifFalse: [
+					(indent = 2 and: [ trimmed beginsWith: 'label:' ])
+						ifTrue: [ currentCategoryLabel := self yamlScalarValueFrom: (trimmed allButFirst: 'label:' size) ]
+						ifFalse: [
+							(indent = 2 and: [ trimmed = 'icons:' ])
+								ifTrue: [ insideIcons := true ]
+								ifFalse: [
+									(insideIcons and: [ indent >= 4 and: [ trimmed beginsWith: '- ' ] ])
+										ifTrue: [ currentIconNames add: (self yamlScalarValueFrom: (trimmed allButFirst: 2)) ]
+										ifFalse: [ insideIcons := false ] ] ] ] ] ].
 
-	categoryMap keysAndValuesDo: [ :key :value |
-		categoryMap at: key put: value asArray ].
+	self
+		addCategoryLabel: (currentCategoryLabel ifNil: [ currentCategoryKey ])
+		iconNames: currentIconNames
+		to: categoryMap.
+	categoryMap keysAndValuesDo: [ :key :value | categoryMap at: key put: value asArray ].
 	^ categoryMap
 ]
 
