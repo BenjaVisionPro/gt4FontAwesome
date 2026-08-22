@@ -213,7 +213,7 @@ FontAwesomeIcons class >> gtIconsFor: aView [
 		itemDataBinder: [ :anElement :anIcon :anIndex |
 			| icon iconElement |
 			icon := self icon: anIcon key.
-			iconElement := icon asScalableElementSized: (icon extentFittingInto: 64 @ 64).
+			iconElement := icon size: 64 @ 64.
 			anElement
 				replaceChild: (anElement childNamed: #icon)
 				with: iconElement
@@ -337,28 +337,14 @@ FontAwesomeIcons class >> icon: aSelectorSymbol color: aColor [
 ]
 
 { #category : 'instance creation' }
-FontAwesomeIcons class >> icon: aSelectorSymbol fitInto: anExtent color: aColor [
-	| icon |
-	icon := (self icon: aSelectorSymbol)
-		color: aColor;
-		yourself.
-	^ [ icon fitInto: anExtent ] asStencil
-]
-
-{ #category : 'instance creation' }
-FontAwesomeIcons class >> icon: aSelectorSymbol height: aNumber color: aColor [
-	| icon |
-	icon := (self icon: aSelectorSymbol)
-		color: aColor;
-		yourself.
-	^ [ icon height: aNumber ] asStencil
-]
-
-{ #category : 'instance creation' }
 FontAwesomeIcons class >> icon: aSelectorSymbol size: aSize color: aColor [
-	(aSize isPoint or: [ aSize respondsTo: #x ]) ifTrue: [
-		^ self icon: aSelectorSymbol fitInto: aSize color: aColor ].
-	^ self icon: aSelectorSymbol height: aSize color: aColor
+	| extent |
+	extent := (aSize isPoint or: [ aSize respondsTo: #x ])
+		ifTrue: [ aSize ]
+		ifFalse: [ aSize @ aSize ].
+	^ (self icon: aSelectorSymbol color: aColor)
+		size: extent;
+		yourself
 ]
 
 { #category : 'instance creation' }
@@ -371,15 +357,6 @@ FontAwesomeIcons class >> icon: aSelectorSymbol styleName: aStyleName [
 	(metadataEntry supportsStyleNamed: aStyleName) ifFalse: [
 		self error: metadataEntry selectorSymbol asString, ' is not available in Font Awesome style ', aStyleName printString ].
 	^ styleClass icon: metadataEntry selectorSymbol
-]
-
-{ #category : 'instance creation' }
-FontAwesomeIcons class >> icon: aSelectorSymbol width: aNumber color: aColor [
-	| icon |
-	icon := (self icon: aSelectorSymbol)
-		color: aColor;
-		yourself.
-	^ [ icon width: aNumber ] asStencil
 ]
 
 { #category : 'instance creation' }
@@ -407,7 +384,7 @@ FontAwesomeIcons class >> metadata: aMetadata [
 FontAwesomeIcons class >> spotterHeaderLogoElement [
 	^ [ | icon logo wrapper |
 	icon := (FontAwesomeIcons style: 'brands') icon: #fontAwesome.
-	logo := (icon asScalableElementSized: (icon extentFittingInto: 28 @ 28))
+	logo := (icon size: 28 @ 28)
 			opacity: 0.85;
 			yourself.
 	wrapper := BlElement new

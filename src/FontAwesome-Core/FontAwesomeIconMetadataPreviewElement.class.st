@@ -135,7 +135,7 @@ FontAwesomeIconMetadataPreviewElement >> newStyleToggleFor: aStyleName [
 		icon: (FontAwesomeBuilderUtility
 				newFontAwesomeIconForMetadata: iconMetadata
 				styleName: aStyleName
-				fitInto: 14 @ 14);
+				size: 14 @ 14);
 		label: aStyleName capitalized;
 		when: BrToggleActivatedEvent
 			do: [ :anEvent | self onStyleActivated: anEvent model ];

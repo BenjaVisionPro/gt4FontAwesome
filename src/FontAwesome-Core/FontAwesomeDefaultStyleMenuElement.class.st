@@ -27,7 +27,7 @@ FontAwesomeDefaultStyleMenuElement class >> menuActionIconFor: anIconLibraryClas
 		BlElement new
 			size: 16 @ 16;
 			layout: BlFrameLayout new;
-			addChild: (icon asScalableElementSized: (icon extentForHeight: 14)) ]
+			addChild: (icon size: 14 @ 14) ]
 		asStencil
 ]
 
@@ -127,7 +127,7 @@ FontAwesomeDefaultStyleMenuElement >> previewIconElementForStyleNamed: aStyleNam
 		(iconLibraryClass style: aStyleName) icon: aSelector ]
 			on: Error
 			do: [ :anError | ^ BlElement new size: 16 @ 16 ].
-	^ (anIcon asScalableElementSized: (anIcon extentForHeight: 16))
+	^ (anIcon size: 16 @ 16)
 		margin: (BlInsets right: 8);
 		yourself
 ]

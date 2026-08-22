@@ -33,15 +33,14 @@ FontAwesomeIconDescription >> acceptMagritte: aVisitor [
 
 { #category : 'icons' }
 FontAwesomeIconDescription >> applySizingToIconElement: anElement [
-	| width height |
+	| width height extent |
 	width := self explicitIconWidth.
 	height := self explicitIconHeight.
-
-	(width notNil and: [ height notNil ]) ifTrue: [
-		^ anElement fitInto: width @ height ].
-	width notNil ifTrue: [ ^ anElement width: width ].
-	height notNil ifTrue: [ ^ anElement height: height ].
-	^ anElement height: self defaultIconHeight
+	extent := (width notNil and: [ height notNil ])
+		ifTrue: [ width @ height ]
+		ifFalse: [ self displayExtentForIntrinsicExtent: anElement intrinsicExtent ].
+	anElement size: extent.
+	^ anElement
 ]
 
 { #category : 'accessing' }

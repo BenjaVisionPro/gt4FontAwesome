@@ -125,7 +125,7 @@ FontAwesomeIconsViewElement >> createSearchHandle [
 
 { #category : 'private - ui' }
 FontAwesomeIconsViewElement >> iconElementForAssociation: anAssociation [
-	^ anAssociation value fitInto: 64 @ 64
+	^ anAssociation value size: 64 @ 64
 ]
 
 { #category : 'private - ui' }

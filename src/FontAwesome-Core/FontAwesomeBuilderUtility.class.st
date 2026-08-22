@@ -39,13 +39,13 @@ FontAwesomeBuilderUtility class >> newFontAwesomeIconFor: aSelectorSymbol using:
 ]
 
 { #category : 'icons' }
-FontAwesomeBuilderUtility class >> newFontAwesomeIconForMetadata: anIconMetadata styleName: aStyleName fitInto: anExtent [
+FontAwesomeBuilderUtility class >> newFontAwesomeIconForMetadata: anIconMetadata styleName: aStyleName size: anExtent [
 	^ [ | icon |
 		icon := anIconMetadata iconLibraryClass
 			icon: anIconMetadata selectorSymbol
 			styleName: aStyleName.
 		icon color: Color black.
-		icon fitInto: anExtent ]
+		icon size: anExtent ]
 		on: Error
 		do: [ BrLabel new
 				aptitude: BrLabelAptitude new;

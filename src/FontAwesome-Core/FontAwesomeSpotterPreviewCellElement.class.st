@@ -102,7 +102,7 @@ FontAwesomeSpotterPreviewCellElement >> refreshIcon [
 			^ self ].
 
 	iconElement ifNil: [ iconElement := self newIconElement ].
-	iconElement fitInto: availableExtent.
+	iconElement size: availableExtent.
 
 	isIconVisible
 		ifFalse: [ self addChild: iconElement.

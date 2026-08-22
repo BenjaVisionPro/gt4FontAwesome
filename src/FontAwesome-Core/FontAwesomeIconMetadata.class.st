@@ -107,7 +107,7 @@ FontAwesomeIconMetadata >> gtLiveFor: aView [
 				styleName: self preferredStyleName.
 			icon color: Color black.
 			GtInspectorElementLiveViewContainer new
-				element: (icon asScalableElementSized: (icon extentForHeight: 64));
+				element: (icon size: 64 @ 64);
 				clipChildren: false ]
 ]
 

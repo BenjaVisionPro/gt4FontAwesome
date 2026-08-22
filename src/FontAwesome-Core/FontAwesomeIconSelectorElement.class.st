@@ -163,7 +163,7 @@ FontAwesomeIconSelectorElement >> newControlIconNamed: aSelectorSymbol [
 	^ [ | icon |
 		icon := (self description iconLibraryClass style: 'solid')
 			icon: aSelectorSymbol.
-		(icon asScalableElementSized: (icon extentForHeight: 14))
+		(icon size: 14 @ 14)
 			constraintsDo: [ :c | c linear vertical alignCenter ] ]
 		on: Error
 		do: [ BrLabel new
@@ -216,7 +216,7 @@ FontAwesomeIconSelectorElement >> newIconTileFor: anMetadata [
 	iconElement := FontAwesomeBuilderUtility
 		newFontAwesomeIconForMetadata: anMetadata
 		styleName: self activeStyleName
-		fitInto: previewHeight @ previewHeight.
+		size: previewHeight @ previewHeight.
 	iconElement constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
@@ -305,7 +305,7 @@ FontAwesomeIconSelectorElement >> newList [
 FontAwesomeIconSelectorElement >> newLogoElement [
 	^ [ | icon |
 	icon := (FontAwesomeIcons style: 'brands') icon: #fontAwesome.
-	(icon asScalableElementSized: (icon extentFittingInto: 200 @ 30))
+	(icon size: 200 @ 30)
 		opacity: 0.8;
 		yourself ]
 		on: Error
