@@ -5,7 +5,7 @@ I am the common base class for generated Font Awesome icon factory classes.
 - I serve as the facade through which clients ask for icons.
 - I manage imported metadata and the list of available styles.
 - I manage the current default style.
-- I expose GT views, Spotter integrations, and actions for browsing and importing icons.
+- I expose GT views, Spotter integrations, and actions for browsing icons.
 - I announce important state changes such as metadata imports and default style updates.
 
 Subclasses can be generated per imported style, while I provide the common API and tooling integration.
@@ -146,11 +146,6 @@ FontAwesomeIcons class >> gtIconAssociationsMatching: aString [
 ]
 
 { #category : 'gt extensions' }
-FontAwesomeIcons class >> gtIconsClearFilter [
-	self gtIconsFilterQuery: ''
-]
-
-{ #category : 'gt extensions' }
 FontAwesomeIcons class >> gtIconsFilterButtonFor: aButton [
 	^ (GtSpotterDropdownButtonStencil new
 		icon: BrGlamorousVectorIcons search;
@@ -227,34 +222,6 @@ FontAwesomeIcons class >> gtIconsFor: aView [
 ]
 
 { #category : 'gt extensions' }
-FontAwesomeIcons class >> gtImportActionFor: anAction [
-	<gtAction>
-	(FontAwesomeImportMenuElement shouldShowActionFor: self)
-		ifFalse: [ ^ anAction noAction ].
-
-	^ anAction dropdown
-		priority: 44;
-		target: GtCoderClassTarget;
-		icon: (FontAwesomeImportMenuElement menuActionIconFor: self);
-		label: 'Import Icons';
-		menuItemPreview: self gtImportStatusLabel;
-		menuItemGroup: FontAwesomeImportMenuElement menuItemGroup;
-		menuItemPinSubmenu;
-		content: [ :aButton :aTargetElement :anExplicitMenu |
-			FontAwesomeImportMenuElement
-				menuContentFor: self
-				button: aButton
-				menuModel: anExplicitMenu ]
-]
-
-{ #category : 'gt extensions' }
-FontAwesomeIcons class >> gtImportStatusLabel [
-	self hasImportedIcons
-		ifFalse: [ ^ 'Not imported' ].
-	^ self metadata allIconMetadata size asString, ' icons'
-]
-
-{ #category : 'gt extensions' }
 FontAwesomeIcons class >> gtNoImportedIconsElement [
 	| container title description |
 	container := BrVerticalPane new
@@ -277,7 +244,7 @@ FontAwesomeIcons class >> gtNoImportedIconsElement [
 		border: BlBorder empty;
 		padding: BlInsets empty;
 		margin: BlInsets empty;
-		text: 'Use the class hamburger menu, then choose Font Awesome > Import Icons. Point it to metadata/icons.json from your licensed Font Awesome download, choose the styles you want, and optionally limit the import to selected categories.';
+		text: 'Import metadata/icons.json with FontAwesomeMetadataImporter. The importer builds the selected Font Awesome styles and installs their searchable metadata on this icon library.';
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical fitContent ];

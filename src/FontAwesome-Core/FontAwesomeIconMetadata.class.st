@@ -37,6 +37,7 @@ Class {
 	#package : 'FontAwesome-Core'
 }
 
+
 { #category : 'accessing' }
 FontAwesomeIconMetadata >> aliases [
 	^ aliases
