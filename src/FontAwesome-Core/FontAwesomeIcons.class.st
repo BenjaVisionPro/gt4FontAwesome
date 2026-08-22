@@ -413,8 +413,8 @@ FontAwesomeIcons class >> metadata: aMetadata [
 { #category : 'private - gt' }
 FontAwesomeIcons class >> spotterHeaderLogoElement [
 	^ [ | icon logo wrapper |
-	icon := (FontAwesomeIcons style: 'brands') icon: #fontAwesomeLogoFull.
-	logo := (icon asScalableElementSized: (icon extentFittingInto: 180 @ 28))
+	icon := (FontAwesomeIcons style: 'brands') icon: #fontAwesome.
+	logo := (icon asScalableElementSized: (icon extentFittingInto: 28 @ 28))
 			opacity: 0.85;
 			yourself.
 	wrapper := BlElement new

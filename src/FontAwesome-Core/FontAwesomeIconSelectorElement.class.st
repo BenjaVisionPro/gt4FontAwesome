@@ -304,7 +304,7 @@ FontAwesomeIconSelectorElement >> newList [
 { #category : 'private' }
 FontAwesomeIconSelectorElement >> newLogoElement [
 	^ [ | icon |
-	icon := (FontAwesomeIcons style: 'brands') icon: #fontAwesomeLogoFull.
+	icon := (FontAwesomeIcons style: 'brands') icon: #fontAwesome.
 	(icon asScalableElementSized: (icon extentFittingInto: 200 @ 30))
 		opacity: 0.8;
 		yourself ]
