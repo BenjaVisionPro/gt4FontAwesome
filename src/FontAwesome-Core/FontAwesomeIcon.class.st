@@ -38,16 +38,16 @@ Class {
 { #category : 'styling' }
 FontAwesomeIcon >> applyColors [
 	1 to: pathElements size do: [ :index |
-		| element role color opacity actualColor background |
+		| element role color opacity actualColor |
 		element := pathElements at: index.
 		role := pathRoles at: index.
-		color := role = #secondary
+		color := (role = #secondary
 			ifTrue: [ secondaryColor ]
-			ifFalse: [ primaryColor ].
+			ifFalse: [ primaryColor ])
+			blocResolveColorForTheme: self theme.
 		opacity := pathOpacities at: index ifAbsent: [ 1.0 ].
 		actualColor := color alpha: (color alpha * opacity).
-		background := BlBackground paint: (BlColorPaint color: actualColor).
-		element background: background ]
+		element background: actualColor asBlBackground ]
 ]
 
 { #category : 'accessing' }
@@ -121,6 +121,12 @@ FontAwesomeIcon >> intrinsicExtent [
 { #category : 'accessing' }
 FontAwesomeIcon >> label [
 	^ label
+]
+
+{ #category : 'hooks - theme' }
+FontAwesomeIcon >> onThemeChanged [
+	super onThemeChanged.
+	pathElements ifNotNil: [ self applyColors ]
 ]
 
 { #category : 'styling' }
