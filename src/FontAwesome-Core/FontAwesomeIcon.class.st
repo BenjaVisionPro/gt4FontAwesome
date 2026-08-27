@@ -38,30 +38,23 @@ Class {
 { #category : 'styling' }
 FontAwesomeIcon >> applyColors [
 	1 to: pathElements size do: [ :index |
-		| element role color opacity actualColor |
+		| element role color opacity |
 		element := pathElements at: index.
 		role := pathRoles at: index.
-		color := (role = #secondary
+		color := role = #secondary
 			ifTrue: [ secondaryColor ]
-			ifFalse: [ primaryColor ])
-			blocResolveColorForTheme: self theme.
+			ifFalse: [ primaryColor ].
 		opacity := pathOpacities at: index ifAbsent: [ 1.0 ].
-		actualColor := color alpha: (color alpha * opacity).
-		element background: actualColor asBlBackground ]
-]
-
-
-{ #category : 'private - styling' }
-FontAwesomeIcon >> applyColorsIfAttachedToSceneGraph [
-	self isAttachedToSceneGraph
-		ifTrue: [ self applyColors ]
+		element
+			background: color asBlBackground;
+			opacity: opacity ]
 ]
 
 { #category : 'accessing' }
 FontAwesomeIcon >> color: aColor [
 	primaryColor := aColor.
 	secondaryColor := aColor.
-	self applyColorsIfAttachedToSceneGraph.
+	self applyColors.
 	^ self
 ]
 
@@ -69,7 +62,7 @@ FontAwesomeIcon >> color: aColor [
 FontAwesomeIcon >> duotoneColorsPrimary: aPrimaryColor secondary: aSecondaryColor [
 	primaryColor := aPrimaryColor.
 	secondaryColor := aSecondaryColor.
-	self applyColorsIfAttachedToSceneGraph.
+	self applyColors.
 	^ self
 ]
 
@@ -130,29 +123,17 @@ FontAwesomeIcon >> label [
 	^ label
 ]
 
-{ #category : 'hooks - scene graph' }
-FontAwesomeIcon >> onAddedToSceneGraph [
-	super onAddedToSceneGraph.
-	self applyColors
-]
-
-{ #category : 'hooks - theme' }
-FontAwesomeIcon >> onThemeChanged [
-	super onThemeChanged.
-	pathElements ifNotNil: [ self applyColors ]
-]
-
 { #category : 'styling' }
 FontAwesomeIcon >> primaryColor: aColor [
 	primaryColor := aColor.
-	self applyColorsIfAttachedToSceneGraph.
+	self applyColors.
 	^ self
 ]
 
 { #category : 'styling' }
 FontAwesomeIcon >> secondaryColor: aColor [
 	secondaryColor := aColor.
-	self applyColorsIfAttachedToSceneGraph.
+	self applyColors.
 	^ self
 ]
 
