@@ -50,11 +50,18 @@ FontAwesomeIcon >> applyColors [
 		element background: actualColor asBlBackground ]
 ]
 
+
+{ #category : 'private - styling' }
+FontAwesomeIcon >> applyColorsIfThemeIsEffective [
+	(self hasParent or: [ self isAttachedToSceneGraph ])
+		ifTrue: [ self applyColors ]
+]
+
 { #category : 'accessing' }
 FontAwesomeIcon >> color: aColor [
 	primaryColor := aColor.
 	secondaryColor := aColor.
-	self applyColors.
+	self applyColorsIfThemeIsEffective.
 	^ self
 ]
 
@@ -62,7 +69,7 @@ FontAwesomeIcon >> color: aColor [
 FontAwesomeIcon >> duotoneColorsPrimary: aPrimaryColor secondary: aSecondaryColor [
 	primaryColor := aPrimaryColor.
 	secondaryColor := aSecondaryColor.
-	self applyColors.
+	self applyColorsIfThemeIsEffective.
 	^ self
 ]
 
@@ -123,6 +130,19 @@ FontAwesomeIcon >> label [
 	^ label
 ]
 
+
+{ #category : 'hooks - children' }
+FontAwesomeIcon >> onAddedToParent [
+	super onAddedToParent.
+	self applyColors
+]
+
+{ #category : 'hooks - scene graph' }
+FontAwesomeIcon >> onAddedToSceneGraph [
+	super onAddedToSceneGraph.
+	self applyColors
+]
+
 { #category : 'hooks - theme' }
 FontAwesomeIcon >> onThemeChanged [
 	super onThemeChanged.
@@ -132,14 +152,14 @@ FontAwesomeIcon >> onThemeChanged [
 { #category : 'styling' }
 FontAwesomeIcon >> primaryColor: aColor [
 	primaryColor := aColor.
-	self applyColors.
+	self applyColorsIfThemeIsEffective.
 	^ self
 ]
 
 { #category : 'styling' }
 FontAwesomeIcon >> secondaryColor: aColor [
 	secondaryColor := aColor.
-	self applyColors.
+	self applyColorsIfThemeIsEffective.
 	^ self
 ]
 
