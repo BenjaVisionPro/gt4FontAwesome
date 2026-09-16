@@ -85,7 +85,7 @@ FontAwesomeIcon >> initializeName: aSelector styleKey: aStyleKey unicode: aUnico
 
 	self
 		clipChildren: false;
-		size: aRectangle extent.
+		size: 16 @ 16.
 
 	pathElements := OrderedCollection new.
 	pathRoles := OrderedCollection new.
