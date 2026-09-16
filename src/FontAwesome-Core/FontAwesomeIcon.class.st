@@ -29,7 +29,8 @@ Class {
 		'label',
 		'viewBox',
 		'primaryColor',
-		'secondaryColor'
+		'secondaryColor',
+		'usesExplicitColors'
 	],
 	#category : 'FontAwesome-Core',
 	#package : 'FontAwesome-Core'
@@ -52,6 +53,7 @@ FontAwesomeIcon >> applyColors [
 
 { #category : 'accessing' }
 FontAwesomeIcon >> color: aColor [
+	usesExplicitColors := true.
 	primaryColor := aColor.
 	secondaryColor := aColor.
 	self applyColors.
@@ -60,6 +62,7 @@ FontAwesomeIcon >> color: aColor [
 
 { #category : 'styling' }
 FontAwesomeIcon >> duotoneColorsPrimary: aPrimaryColor secondary: aSecondaryColor [
+	usesExplicitColors := true.
 	primaryColor := aPrimaryColor.
 	secondaryColor := aSecondaryColor.
 	self applyColors.
@@ -73,6 +76,7 @@ FontAwesomeIcon >> iconName [
 
 { #category : 'initialization' }
 FontAwesomeIcon >> initializeName: aSelector styleKey: aStyleKey unicode: aUnicodeString label: aLabelString viewBox: aRectangle pathSpecs: pathSpecs [
+	usesExplicitColors := false.
 	iconName := aSelector.
 	styleKey := aStyleKey.
 	unicode := aUnicodeString.
@@ -125,6 +129,7 @@ FontAwesomeIcon >> label [
 
 { #category : 'styling' }
 FontAwesomeIcon >> primaryColor: aColor [
+	usesExplicitColors := true.
 	primaryColor := aColor.
 	self applyColors.
 	^ self
@@ -132,6 +137,7 @@ FontAwesomeIcon >> primaryColor: aColor [
 
 { #category : 'styling' }
 FontAwesomeIcon >> secondaryColor: aColor [
+	usesExplicitColors := true.
 	secondaryColor := aColor.
 	self applyColors.
 	^ self
@@ -150,4 +156,19 @@ FontAwesomeIcon >> unicode [
 { #category : 'accessing' }
 FontAwesomeIcon >> viewBox [
 	^ viewBox
+]
+
+{ #category : 'styling' }
+FontAwesomeIcon >> background: aColor [
+	pathElements ifNil: [ ^ super background: aColor ].
+	usesExplicitColors ifTrue: [ ^ self ].
+	primaryColor := aColor.
+	secondaryColor := aColor.
+	self applyColors
+]
+
+{ #category : 'styling' }
+FontAwesomeIcon >> useInheritedColor [
+	usesExplicitColors := false.
+	^ self
 ]
