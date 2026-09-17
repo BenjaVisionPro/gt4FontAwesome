@@ -41,9 +41,10 @@ FontAwesomeIcon >> applyColors [
 		| element role color opacity |
 		element := pathElements at: index.
 		role := pathRoles at: index.
-		color := role = #secondary
+		color := (role = #secondary
 			ifTrue: [ secondaryColor ]
-			ifFalse: [ primaryColor ].
+			ifFalse: [ primaryColor ])
+				blocResolveColorForTheme: self theme.
 		opacity := pathOpacities at: index ifAbsent: [ 1.0 ].
 		element
 			background: color asBlBackground;
@@ -110,6 +111,7 @@ FontAwesomeIcon >> initializeName: aSelector styleKey: aStyleKey unicode: aUnico
 	primaryColor := Color black.
 	secondaryColor := Color black.
 	self applyColors.
+	self when: BlElementThemeChanged do: [ self applyColors ].
 	^ self
 ]
 
